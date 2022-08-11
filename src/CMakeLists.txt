@@ -32,6 +32,14 @@ set(components_sources
     components/MainMenu.cpp
 )
 
+set(objects_headers
+    components/objects/AbstractObject.h
+)
+
+set(objects_sources
+    components/objects/AbstractObject.cpp
+)
+
 set(types_headers
     types/ExceptionError.h
     types/Property.h
@@ -50,6 +58,8 @@ add_library(ZumaLib
     GameState.cpp
     ${components_headers}
     ${components_sources}
+    ${objects_headers}
+    ${objects_sources}
     ${scenes_headers}
     ${scenes_sources}
     ${types_headers}

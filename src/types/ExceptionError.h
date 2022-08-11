@@ -14,6 +14,7 @@ namespace zuma {
 enum class ExceptionErrorType
 {
     BadCast,
+    Missing,
     Unknown
 };
 

@@ -1,17 +1,26 @@
 /******************************************************************************
 **
-** File      main.cpp
+** File      Engine.h
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
 
-#include "Engine.h"
+#pragma once
 
-int main()
+#include <SFML/System.hpp>
+
+namespace zuma
 {
-    zuma::Engine e;
 
-    e.exec();
+class Engine 
+{
+public:
 
-    return 0;
+    void exec();
+
+private:
+   sf::Clock m_clock;
+   sf::Time m_elapsed; 
+};
+
 }

@@ -32,6 +32,16 @@ set(components_sources
     components/MainMenu.cpp
 )
 
+set(types_headers
+    types/ExceptionError.h
+    types/Property.h
+    types/Property_internal.h
+)
+
+set(types_sources
+    types/ExceptionError.cpp
+)
+
 add_library(ZumaLib
     STATIC
     Engine.h
@@ -42,6 +52,8 @@ add_library(ZumaLib
     ${components_sources}
     ${scenes_headers}
     ${scenes_sources}
+    ${types_headers}
+    ${types_sources}
 )
 
 target_link_libraries(ZumaLib

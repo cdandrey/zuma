@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.3)
 
 set(SFML_STATIC_LIBRARIES TRUE)
 find_package(SFML 2.5 COMPONENTS graphics system window REQUIRED)
@@ -21,23 +21,42 @@ set(scenes_sources
 set(components_headers
     components/Button.h
     components/Gameplay.h
-    components/Gun.h
     components/MainMenu.h
 )
 
 set(components_sources
     components/Button.cpp
     components/Gameplay.cpp
-    components/Gun.cpp
     components/MainMenu.cpp
 )
 
 set(objects_headers
     components/objects/AbstractObject.h
+    components/objects/Gun.h
 )
 
 set(objects_sources
     components/objects/AbstractObject.cpp
+    components/objects/Gun.cpp
+)
+
+set(adapters_headers
+    components/adapters/AbstractAdapter.h
+    components/adapters/AdapterRotable.h
+)
+
+set(adapters_sources
+    components/adapters/AbstractAdapter.cpp
+    components/adapters/AdapterRotable.cpp
+)
+
+set(commands_headers
+    components/commands/AbstractCommand.h
+    components/commands/CommandRotable.h
+)
+
+set(commands_sources
+    components/commands/CommandRotable.cpp
 )
 
 set(types_headers
@@ -56,14 +75,18 @@ add_library(ZumaLib
     Engine.cpp
     GameState.h
     GameState.cpp
-    ${components_headers}
-    ${components_sources}
-    ${objects_headers}
-    ${objects_sources}
-    ${scenes_headers}
-    ${scenes_sources}
     ${types_headers}
     ${types_sources}
+    ${adapters_headers}
+    ${adapters_sources}
+    ${commands_headers}
+    ${commands_sources}
+    ${objects_headers}
+    ${objects_sources}
+    ${components_headers}
+    ${components_sources}
+    ${scenes_headers}
+    ${scenes_sources}
 )
 
 target_link_libraries(ZumaLib

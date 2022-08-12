@@ -15,6 +15,7 @@ enum class ExceptionErrorType
 {
     BadCast,
     Missing,
+    NotInitialized,
     Unknown
 };
 

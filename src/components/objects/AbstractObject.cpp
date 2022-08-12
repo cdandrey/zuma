@@ -11,6 +11,10 @@
 
 namespace zuma {
 
+AbstractObject::~AbstractObject()
+{
+}
+
 Result<PropertyValue> AbstractObject::getProperty(PropertyKey key) const
 {
 	return hasProperty(key).map([this, key]() -> PropertyValue {

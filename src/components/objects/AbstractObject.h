@@ -10,6 +10,8 @@
 #include "../../types/ExceptionError.h"
 #include "../../types/Property.h"
 
+#include <memory>
+
 namespace zuma {
 
 class AbstractObject

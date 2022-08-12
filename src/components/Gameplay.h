@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Gun.h"
+#include "objects/Gun.h"
 
 namespace zuma
 {
@@ -18,11 +18,13 @@ public:
 
     explicit Gameplay(sf::Vector2u size);
     ~Gameplay() = default;
-
-    void Draw(sf::RenderWindow *window);
+    
+    void rotateGun(sf::Vector2f position);
+    void update();
+    void draw(sf::RenderWindow *window);
 
 private:
-    Gun m_gun;
+    std::shared_ptr<Gun> m_gun;
 };
 
 }

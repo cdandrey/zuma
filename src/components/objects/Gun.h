@@ -7,23 +7,21 @@
 
 #pragma once
 
+#include "AbstractObject.h"
 #include <SFML/Graphics.hpp>
 
 namespace zuma
 {
 
-class Gun
+class Gun : public AbstractObject
 {
 public:
-    Gun();
+    explicit Gun(sf::Vector2f position);
     ~Gun() = default;
 
-    void setSize(sf::Vector2f size);
-    void setPos(sf::Vector2f pos);
     void setColor(sf::Color color);
-    void setRotate(float angel);
 
-    void Draw(sf::RenderWindow *window);
+    void draw(sf::RenderWindow *window);
 
 private:
    sf::Texture m_texture;

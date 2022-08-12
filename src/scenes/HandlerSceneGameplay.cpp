@@ -2,6 +2,8 @@
 #include "Scene.h"
 #include "../GameState.h"
 
+#include <iostream>
+
 namespace zuma {
 
 bool HandlerSceneGameplay::isOpen(Scene *scene) const
@@ -16,9 +18,13 @@ void HandlerSceneGameplay::Input(Scene *scene)
         if (event.type == sf::Event::Closed) {
             scene->getWindow()->close();
         }
-        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-        {
+        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
             scene->getGameState()->changed(GameState::State::Menu);
+        }
+        if (event.type == sf::Event::MouseMoved) {
+            const auto mousePos = sf::Mouse::getPosition(*scene->getWindow());
+            //std::cout << mousePos.x << ", " << mousePos.y << std::endl;
+            scene->getGameplay()->rotateGun(static_cast<sf::Vector2f>(mousePos));
         }
     }
 
@@ -27,7 +33,8 @@ void HandlerSceneGameplay::Input(Scene *scene)
 void HandlerSceneGameplay::Update(Scene *scene)
 {
     scene->Update();
-    scene->getGameplay()->Draw(scene->getWindow());
+    scene->getGameplay()->update();
+    scene->getGameplay()->draw(scene->getWindow());
 }
 
 void HandlerSceneGameplay::Render(Scene *scene)

@@ -9,8 +9,8 @@
 
 #include <memory>
 
-#include "../components/Gameplay.h"
-#include "../components/MainMenu.h"
+#include "../../components/Gameplay.h"
+#include "../../components/MainMenu.h"
 
 namespace sf {
 class RenderWindow;

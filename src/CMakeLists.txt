@@ -3,19 +3,29 @@ cmake_minimum_required(VERSION 3.3)
 set(SFML_STATIC_LIBRARIES TRUE)
 find_package(SFML 2.5 COMPONENTS graphics system window REQUIRED)
 
+set(engine_headers
+    engine/Engine.h
+    engine/GameState.h
+)
+
+set(engine_sources
+    engine/Engine.cpp
+    engine/GameState.cpp
+)
+
 set(scenes_headers
-    scenes/AbstractHandlerScene.h
-    scenes/HandlerSceneGameplay.h
-    scenes/HandlerSceneMenu.h
-    scenes/HandlerSceneScore.h
-    scenes/Scene.h
+    engine/scenes/AbstractHandlerScene.h
+    engine/scenes/HandlerSceneGameplay.h
+    engine/scenes/HandlerSceneMenu.h
+    engine/scenes/HandlerSceneScore.h
+    engine/scenes/Scene.h
 )
 
 set(scenes_sources
-    scenes/HandlerSceneGameplay.cpp
-    scenes/HandlerSceneMenu.cpp
-    scenes/HandlerSceneScore.cpp
-    scenes/Scene.cpp
+    engine/scenes/HandlerSceneGameplay.cpp
+    engine/scenes/HandlerSceneMenu.cpp
+    engine/scenes/HandlerSceneScore.cpp
+    engine/scenes/Scene.cpp
 )
 
 set(components_headers
@@ -71,22 +81,20 @@ set(types_sources
 
 add_library(ZumaLib
     STATIC
-    Engine.h
-    Engine.cpp
-    GameState.h
-    GameState.cpp
-    ${types_headers}
-    ${types_sources}
     ${adapters_headers}
     ${adapters_sources}
     ${commands_headers}
     ${commands_sources}
-    ${objects_headers}
-    ${objects_sources}
     ${components_headers}
     ${components_sources}
+    ${engine_headers}
+    ${engine_sources}
+    ${objects_headers}
+    ${objects_sources}
     ${scenes_headers}
     ${scenes_sources}
+    ${types_headers}
+    ${types_sources}
 )
 
 target_link_libraries(ZumaLib

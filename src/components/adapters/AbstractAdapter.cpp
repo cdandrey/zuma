@@ -9,7 +9,7 @@
 
 namespace zuma {
 
-AbstractAdapter::AbstractAdapter(const AbstractObjectPtr& object)
+AbstractAdapter::AbstractAdapter(AbstractObject* object)
     : m_object{ object }
 {
 }
@@ -18,7 +18,7 @@ AbstractAdapter::~AbstractAdapter()
 {
 }
 
-Result<AbstractObjectPtr> AbstractAdapter::getObject() const
+Result<AbstractObject*> AbstractAdapter::getObject() const
 {
     if (m_object != nullptr)
     {

@@ -10,13 +10,14 @@
 namespace zuma
 {
 
-ObjectBall::ObjectBall(sf::Vector2f position, sf::Color color) 
-    : AbstractObject {std::pair {PositionProperty::key, PositionProperty::type {}},
+ObjectBall::ObjectBall(sf::Vector2f origin, sf::Vector2f position, sf::Color color) 
+    : AbstractObject {std::pair {OriginProperty::key, origin},
+                      std::pair {PositionProperty::key, position},
                       std::pair {VelocityProperty::key, VelocityProperty::type {}},
-                      std::pair {ColorProperty::key, ColorProperty::type{}}}
+                      std::pair {CircleVelocityProperty::key, CircleVelocityProperty::type {}},
+                      std::pair {ColorProperty::key, color}}
 {
-    setProperty(PositionProperty::key,position);
-    setProperty(ColorProperty::key,color);
+    m_circle.setRadius(25.0f);
     update();
 }
 

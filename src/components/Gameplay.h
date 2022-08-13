@@ -8,6 +8,9 @@
 #pragma once
 
 #include "objects/ObjectGun.h"
+#include "objects/ObjectBall.h"
+
+#include <forward_list>
 
 namespace zuma
 {
@@ -25,6 +28,7 @@ public:
 
 private:
     std::shared_ptr<ObjectGun> m_gun;
+    std::forward_list<ObjectBall> m_balls;
 };
 
 }

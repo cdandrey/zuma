@@ -56,20 +56,24 @@ set(objects_sources
 
 set(adapters_headers
     components/adapters/AbstractAdapter.h
+    components/adapters/AdapterMovable.h
     components/adapters/AdapterRotable.h
 )
 
 set(adapters_sources
     components/adapters/AbstractAdapter.cpp
+    components/adapters/AdapterMovable.cpp
     components/adapters/AdapterRotable.cpp
 )
 
 set(commands_headers
     components/commands/AbstractCommand.h
+    components/commands/CommandCircleMovable.h
     components/commands/CommandRotable.h
 )
 
 set(commands_sources
+    components/commands/CommandCircleMovable.cpp
     components/commands/CommandRotable.cpp
 )
 

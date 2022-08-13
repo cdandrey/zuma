@@ -16,7 +16,7 @@ namespace zuma
 class ObjectBall : public AbstractObject
 {
 public:
-    ObjectBall(sf::Vector2f position,sf::Color color);
+    ObjectBall(sf::Vector2f origin, sf::Vector2f position,sf::Color color);
     ~ObjectBall() = default;
 
     void update();

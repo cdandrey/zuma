@@ -14,14 +14,14 @@ namespace zuma {
 class AbstractAdapter
 {
 public:
-    explicit AbstractAdapter(const AbstractObjectPtr& object);
+    explicit AbstractAdapter(AbstractObject* object);
     virtual ~AbstractAdapter() = 0;
 
 protected:
-    Result<AbstractObjectPtr> getObject() const;
+    Result<AbstractObject*> getObject() const;
 
 private:
-    AbstractObjectPtr m_object;
+    AbstractObject *m_object;
 };
 
 }  // namespace zuma

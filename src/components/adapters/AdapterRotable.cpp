@@ -1,22 +1,29 @@
+/******************************************************************************
+**
+** File      AdapterRotable.cpp
+** Author    Andrii Sydorenko
+**
+******************************************************************************/
+
 #include "AdapterRotable.h"
 
 #include <variant>
 
 namespace zuma {
 
-AbstractAdapterRotable::AbstractAdapterRotable(const AbstractObjectPtr& object)
+AbstractAdapterRotable::AbstractAdapterRotable(AbstractObject *object)
     : AbstractAdapter{ object }
 {
 }
 
-AdapterRotable::AdapterRotable(const AbstractObjectPtr& object)
+AdapterRotable::AdapterRotable(AbstractObject* object)
     : AbstractAdapterRotable{ object }
 {
 }
 
 Result<PositionProperty::type> AdapterRotable::getPosition() const
 {
-    const auto onGetPosition = [](const AbstractObjectPtr& object) -> Result<PropertyValue> {
+    const auto onGetPosition = [](AbstractObject *object) -> Result<PropertyValue> {
 
         return object->getProperty(PositionProperty::key);
     };
@@ -26,7 +33,7 @@ Result<PositionProperty::type> AdapterRotable::getPosition() const
 
 Result<RotatePositionProperty::type> AdapterRotable::getRotatePosition() const
 {
-    const auto onGetRotatePosition = [](const AbstractObjectPtr& object) -> Result<PropertyValue> {
+    const auto onGetRotatePosition = [](AbstractObject *object) -> Result<PropertyValue> {
         return object->getProperty(RotatePositionProperty::key);
     };
 
@@ -35,7 +42,7 @@ Result<RotatePositionProperty::type> AdapterRotable::getRotatePosition() const
 
 Result<void> AdapterRotable::setDirection(const DirectionProperty::type& value)
 {
-    const auto onSetDirection = [&value](const AbstractObjectPtr& object) -> Result<void> {
+    const auto onSetDirection = [&value](AbstractObject *object) -> Result<void> {
         return object->setProperty(DirectionProperty::key, value);
     };
 

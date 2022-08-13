@@ -1,65 +1,32 @@
 /******************************************************************************
 **
-** File      Button.h
+** File      Button.cpp
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
 
 #include "Button.h"
-#include <iostream>
+#include "../types/Config.h"
 
 namespace zuma
 {
 
-void Button::setText(const std::string &text)
-{
-    m_font.loadFromFile("resources/font/Comfortaa-Bold.ttf");
-    m_text.setFont(m_font);
-    m_text.setString(text);
-    auto textRect = m_text.getLocalBounds();
-    m_text.setOrigin(textRect.left + textRect.width / 2.0f,textRect.top + textRect.height / 2.0f);
-}
-
-void Button::setPos(sf::Vector2f pos)
-{
-    m_rect.setPosition(pos);
-    m_text.setPosition(pos);
-}
-
-void Button::setSize(sf::Vector2f size)
+Button::Button(sf::Vector2f size,sf::Vector2f position,const std::string &text)
 {
     m_rect.setSize(size);
-    m_rect.setOrigin(size.x / 2.0f,size.y / 2.0f);
-}
+    m_rect.setOrigin({size.x / 2.0f, size.y / 2.0f});
+    m_rect.setPosition(position);
+    m_rect.setFillColor(config::button.fillColor);
+    m_rect.setOutlineColor(config::button.borderColor);
 
-void Button::setBackgroundColor(sf::Color color)
-{
-    m_rect.setFillColor(color);
-}
-
-void Button::setTextColor(sf::Color color)
-{
-    m_text.setFillColor(color);
-}
-
-void Button::setTextSize(int size)
-{
-    m_text.setCharacterSize(size);
-}
-
-void Button::setTextStyle(sf::Text::Style style)
-{
-    m_text.setStyle(style);
-}
-
-sf::Vector2f Button::getSize() const
-{
-    return m_rect.getSize();
-}
-
-sf::Vector2f Button::getPosition() const
-{
-    return m_rect.getPosition();
+    m_font.loadFromFile(config::button.fontPath);
+    m_text.setFont(m_font);
+    m_text.setString(text);
+    m_text.setPosition(position);
+    const auto textRect = m_text.getLocalBounds();
+    m_text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+    m_text.setFillColor(config::button.textColor);
+    m_text.setCharacterSize(config::button.textSize);
 }
 
 bool Button::isHover(sf::Vector2i mousePos) const
@@ -80,14 +47,16 @@ bool Button::isHover(sf::Vector2i mousePos) const
 
 void Button::unhovered()
 {
-    m_rect.setFillColor(sf::Color::White);
-    m_text.setFillColor(sf::Color::Black);
+    m_rect.setFillColor(config::button.fillColor);
+    m_rect.setOutlineColor(config::button.borderColor);
+    m_text.setFillColor(config::button.textColor);
 }
 
 void Button::hovered()
 {
-    m_rect.setFillColor(sf::Color::Black);
-    m_text.setFillColor(sf::Color::White);
+    m_rect.setFillColor(config::button.hoverFillColor);
+    m_rect.setOutlineColor(config::button.hoverBorderColor);
+    m_text.setFillColor(config::button.hoverTextColor);
 }
 
 void Button::Draw(sf::RenderWindow *window) const
@@ -96,4 +65,4 @@ void Button::Draw(sf::RenderWindow *window) const
     window->draw(m_text);
 }
 
-}
+}   // namespace zuma

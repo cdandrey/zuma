@@ -6,26 +6,15 @@
 ******************************************************************************/
 
 #include "MainMenu.h"
+#include "../types/Config.h"
 
 namespace zuma
 {
 
-MainMenu::MainMenu(sf::Vector2u size)
+MainMenu::MainMenu(sf::Vector2u windowSize)
+    : m_buttonPlay{config::menu::buttonSize(windowSize),config::menu::buttonPosition(2,0,windowSize),"Play"}
+    , m_buttonExit{config::menu::buttonSize(windowSize),config::menu::buttonPosition(2,1,windowSize),"Exit"}
 {
-    const float width = size.x / 5.0f;
-    const float height = size.y / 10.0f;
-    const float padding {10.0f};
-
-    const auto createButton = [width,height](Button &button,sf::Vector2f pos,const std::string &text) {
-        button.setSize({width,height});
-        button.setPos(pos);
-        button.setText(text);
-        button.setTextSize(32);
-        button.setTextColor(sf::Color::Black);
-    };
-
-    createButton(m_buttonPlay,{width / 2.0f + 4*padding , 8*height - 2*padding},"Play");
-    createButton(m_buttonExit,{width / 2.0f + 4*padding , 9*height - padding},"Exit");
 }
 
 void MainMenu::Draw(sf::RenderWindow *window) const

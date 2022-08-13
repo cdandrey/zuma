@@ -78,6 +78,7 @@ set(commands_sources
 )
 
 set(types_headers
+    types/Config.h
     types/ExceptionError.h
     types/Property.h
     types/Property_internal.h

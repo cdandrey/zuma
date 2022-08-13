@@ -15,7 +15,7 @@ namespace zuma
 class Score
 {
 public:
-    explicit Score(sf::Vector2u size);
+    explicit Score(sf::Vector2u windowSize);
     ~Score() = default;
 
     void Draw(sf::RenderWindow *window) const;

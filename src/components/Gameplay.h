@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "objects/Gun.h"
+#include "objects/ObjectGun.h"
 
 namespace zuma
 {
@@ -24,7 +24,7 @@ public:
     void draw(sf::RenderWindow *window);
 
 private:
-    std::shared_ptr<Gun> m_gun;
+    std::shared_ptr<ObjectGun> m_gun;
 };
 
 }

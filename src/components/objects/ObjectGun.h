@@ -1,6 +1,6 @@
 /******************************************************************************
 **
-** File      Gun.h
+** File      ObjectGun.h
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
@@ -13,14 +13,15 @@
 namespace zuma
 {
 
-class Gun : public AbstractObject
+class ObjectGun : public AbstractObject
 {
 public:
-    explicit Gun(sf::Vector2f position);
-    ~Gun() = default;
+    explicit ObjectGun(sf::Vector2f position);
+    ~ObjectGun() = default;
 
     void setColor(sf::Color color);
 
+    void update();
     void draw(sf::RenderWindow *window);
 
 private:

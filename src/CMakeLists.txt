@@ -45,13 +45,13 @@ set(components_sources
 set(objects_headers
     components/objects/AbstractObject.h
     components/objects/ObjectBall.h
-    components/objects/Gun.h
+    components/objects/ObjectGun.h
 )
 
 set(objects_sources
     components/objects/AbstractObject.cpp
     components/objects/ObjectBall.cpp
-    components/objects/Gun.cpp
+    components/objects/ObjectGun.cpp
 )
 
 set(adapters_headers

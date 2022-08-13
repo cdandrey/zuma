@@ -32,12 +32,14 @@ set(components_headers
     components/Button.h
     components/Gameplay.h
     components/MainMenu.h
+    components/Score.h
 )
 
 set(components_sources
     components/Button.cpp
     components/Gameplay.cpp
     components/MainMenu.cpp
+    components/Score.cpp
 )
 
 set(objects_headers

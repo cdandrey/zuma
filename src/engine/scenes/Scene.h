@@ -11,6 +11,7 @@
 
 #include "../../components/Gameplay.h"
 #include "../../components/MainMenu.h"
+#include "../../components/Score.h"
 
 namespace sf {
 class RenderWindow;
@@ -36,12 +37,14 @@ public:
     GameState* getGameState() const;
     MainMenu* getMainMenu() const;
     Gameplay* getGameplay() const;
+    Score* getScore() const;
 
 private:
-    std::unique_ptr<sf::RenderWindow> m_windowUPtr;
     std::unique_ptr<GameState> m_gameStateUPtr;
+    std::unique_ptr<sf::RenderWindow> m_windowUPtr;
     std::unique_ptr<MainMenu> m_mainMenuUPtr;
     std::unique_ptr<Gameplay> m_gameplayUPtr;
+    std::unique_ptr<Score> m_scoreUPtr;
 
     void Create();
     void Destroy();

@@ -30,6 +30,7 @@ void Scene::Create()
     m_gameStateUPtr = std::make_unique<GameState>();
     m_mainMenuUPtr = std::make_unique<MainMenu>(sf::Vector2u{1920,1080});
     m_gameplayUPtr = std::make_unique<Gameplay>(sf::Vector2u{1920,1080});
+    m_scoreUPtr = std::make_unique<Score>(sf::Vector2u{1920,1080});
 }
 
 void Scene::Destroy()
@@ -84,6 +85,11 @@ MainMenu* Scene::getMainMenu() const
 Gameplay *Scene::getGameplay() const
 {
     return m_gameplayUPtr.get();
+}
+
+Score *Scene::getScore() const
+{
+    return m_scoreUPtr.get();
 }
 
 }

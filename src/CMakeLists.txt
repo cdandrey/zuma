@@ -44,11 +44,13 @@ set(components_sources
 
 set(objects_headers
     components/objects/AbstractObject.h
+    components/objects/ObjectBall.h
     components/objects/Gun.h
 )
 
 set(objects_sources
     components/objects/AbstractObject.cpp
+    components/objects/ObjectBall.cpp
     components/objects/Gun.cpp
 )
 

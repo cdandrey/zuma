@@ -16,6 +16,7 @@ namespace config
 {
 
 static const sf::Vector2u cBaseWindowSize = {1920,1080};
+static const sf::Vector2u cBaseWindowCenter = {cBaseWindowSize.x / 2, cBaseWindowSize.y / 2};
 
 static sf::Vector2f scaleFactor(sf::Vector2u windowSize)
 {
@@ -23,85 +24,95 @@ static sf::Vector2f scaleFactor(sf::Vector2u windowSize)
             static_cast<float>(windowSize.y) / static_cast<float>(cBaseWindowSize.y)};
 }
 
-struct Button
+static sf::Vector2f origin(sf::Vector2f size) 
 {
-    sf::Color fillColor;
-    sf::Color borderColor;
-    sf::Color hoverFillColor;
-    sf::Color hoverBorderColor;
-    sf::Color textColor;
-    sf::Color hoverTextColor;
-    int textSize;
-    std::string fontPath;
-};
+    return {size.x / 2.0f, size.y / 2.0f};
+}
 
-static const Button button = {
-            sf::Color::White,
-            sf::Color::White,
-            sf::Color::Black,
-            sf::Color::Black,
-            sf::Color::Black,
-            sf::Color::White,
-            32,
-            "resources/font/Comfortaa-Bold.ttf"
-        };
+namespace button
+{
+    static const sf::Color   cFillColor        =  sf::Color::White;
+    static const sf::Color   cBorderColor      =  sf::Color::Black;
+    static const float       cBorderThickness  =  2.0f;
+    static const sf::Color   cHoverFillColor   =  sf::Color::Black;
+    static const sf::Color   cHoverBorderColor =  sf::Color::Black;
+    static const sf::Color   cTextColor        =  sf::Color::Black;
+    static const sf::Color   cHoverTextColor   =  sf::Color::White;
+    static const int         cTextSize         =  32;
+    static const std::string cFontPath         =  "resources/font/Comfortaa-Bold.ttf";
+
+}   // namespace button
 
 namespace menu
 {
 
-    static const float buttonPaddingLeft = 40.0f;
-    static const float buttonPaddingTop = 10.0f;
-    static const float buttonWidthCoef = 5.0f;
-    static const float buttonHeightCoef = 10.0f;
-
-    static sf::Vector2f buttonSize(sf::Vector2u windowSize) 
+    namespace button
     {
-        return {windowSize.x / buttonWidthCoef, windowSize.y / buttonHeightCoef};
-    }
+        static const sf::Vector2f cBaseSize     = {400.0f,100.0f};
+        static const sf::Vector2f cBasePosition = {300.0f,cBaseWindowSize.y - 150.0f};
+        static const float        cPadding      = 10.0f;
 
-    static sf::Vector2f buttonPosition(int count,int order,sf::Vector2u windowSize)
-    {
-        const auto size = buttonSize(windowSize);
-        return {size.x / 2.0f + buttonPaddingLeft,
-                (buttonHeightCoef - (count - order))*size.y - (count - order)*buttonPaddingTop};
-    }
+        static sf::Vector2f size(sf::Vector2u windowSize) 
+        {
+            return {cBaseSize.x * scaleFactor(windowSize).x,
+                    cBaseSize.y * scaleFactor(windowSize).y};
+        }
+
+        static sf::Vector2f position(int count,int idx,sf::Vector2u windowSize) 
+        {
+            const auto scale = scaleFactor(windowSize);
+            return {scale.x * cBasePosition.x,
+                    scale.y * (cBasePosition.y - (count - idx - 1)*(cBaseSize.y + cPadding))};
+        }
+    }   // namespace menu::button
 
 }   // namespace menu
 
 namespace score
 {
-
-    static const float boxSizeCoef = 2.0f;
-    static const float buttonHeightCoef = 8.0f;
-
-    static sf::Vector2f boxSize(sf::Vector2u windowSize) 
+    static const float cPadding = 10.0f;
+    
+    namespace box
     {
-        return {windowSize.x / boxSizeCoef, windowSize.y / boxSizeCoef};
-    }
+        static const sf::Vector2f cBaseSize        = {600.0f,400.0f};
+        static const sf::Vector2f cBasePosition    = {static_cast<float>(cBaseWindowCenter.x),
+                                                      static_cast<float>(cBaseWindowCenter.y)};
+        static const sf::Color    cFillColor       = sf::Color::White;
+        static const sf::Color    cBorderColor     = sf::Color::Black;
+        static const float        cBorderThickness = 2.0f;
+    
+        static sf::Vector2f size(sf::Vector2u windowSize) 
+        {
+            const auto scale = scaleFactor(windowSize);
+            return {scale.x * cBaseSize.x, scale.y * cBaseSize.y};
+        }
 
-    static sf::Vector2f boxPosition(sf::Vector2u windowSize) 
+        static sf::Vector2f position(sf::Vector2u windowSize) 
+        {
+            const auto scale = scaleFactor(windowSize);
+            return {scale.x * cBasePosition.x, scale.y * cBasePosition.y};
+        }
+
+    }   // namespace score::box
+
+    namespace button
     {
-        return {windowSize.x / (2.0f * boxSizeCoef), windowSize.y / (2.0f * boxSizeCoef)};
-    }
+        static const sf::Vector2f cBaseSize = {box::cBaseSize.x, 40.0f};
+        static const sf::Vector2f cBasePosition = {box::cBasePosition.x,
+                                                   box::cBasePosition.y + box::cBaseSize.y / 2.0f + cBaseSize.y / 2.0f + cPadding};
+    
+        static sf::Vector2f size(sf::Vector2u windowSize) 
+        {
+            const auto scale = scaleFactor(windowSize);
+            return {scale.x * cBaseSize.x, scale.y * cBaseSize.y};
+        }
 
-    static sf::Vector2f buttonSize(sf::Vector2u windowSize) 
-    {
-        return {boxSize(windowSize).x, boxSize(windowSize).y / buttonHeightCoef};
-    }
-
-    static sf::Vector2f buttonPosition(sf::Vector2u windowSize)
-    {
-        return {boxSize(windowSize).x, boxSize(windowSize).y * 1.5f - buttonSize(windowSize).y / 2.0f};
-    }
-
-    struct Box
-    {
-        sf::Color fillColor;
-        sf::Color borderColor;
-        float borderThickness;
-    };
-
-    static const Box box = {sf::Color::White,sf::Color::Black,2.0f};
+        static sf::Vector2f position(sf::Vector2u windowSize) 
+        {
+            const auto scale = scaleFactor(windowSize);
+            return {scale.x * cBasePosition.x, scale.y * cBasePosition.y};
+        }
+    }   // namespace score::button
 
 }   // namespace score
 

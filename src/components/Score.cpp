@@ -12,13 +12,14 @@ namespace zuma
 {
 
 Score::Score(sf::Vector2u windowSize)
-    : m_buttonOk{config::score::buttonSize(windowSize),config::score::buttonPosition(windowSize),"OK"}
+    : m_buttonOk{config::score::button::size(windowSize),config::score::button::position(windowSize),"OK"}
 {
-    m_rectBox.setSize(config::score::boxSize(windowSize));
-    m_rectBox.setPosition(config::score::boxPosition(windowSize));
-    m_rectBox.setFillColor(config::score::box.fillColor);
-    m_rectBox.setOutlineThickness(config::score::box.borderThickness);
-    m_rectBox.setOutlineColor(config::score::box.borderColor);
+    m_rectBox.setSize(config::score::box::size(windowSize));
+    m_rectBox.setOrigin(config::origin(m_rectBox.getSize()));
+    m_rectBox.setPosition(config::score::box::position(windowSize));
+    m_rectBox.setFillColor(config::score::box::cFillColor);
+    m_rectBox.setOutlineThickness(config::score::box::cBorderThickness);
+    m_rectBox.setOutlineColor(config::score::box::cBorderColor);
 }
 
 void Score::Draw(sf::RenderWindow *window) const

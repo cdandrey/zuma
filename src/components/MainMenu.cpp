@@ -12,8 +12,8 @@ namespace zuma
 {
 
 MainMenu::MainMenu(sf::Vector2u windowSize)
-    : m_buttonPlay{config::menu::buttonSize(windowSize),config::menu::buttonPosition(2,0,windowSize),"Play"}
-    , m_buttonExit{config::menu::buttonSize(windowSize),config::menu::buttonPosition(2,1,windowSize),"Exit"}
+    : m_buttonPlay{config::menu::button::size(windowSize),config::menu::button::position(2,0,windowSize),"Play"}
+    , m_buttonExit{config::menu::button::size(windowSize),config::menu::button::position(2,1,windowSize),"Exit"}
 {
 }
 

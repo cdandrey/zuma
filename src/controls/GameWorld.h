@@ -1,6 +1,6 @@
 /******************************************************************************
 **
-** File      GameScenes.h
+** File      GameWorld.h
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
@@ -22,11 +22,11 @@ namespace zuma
 
 class GameState;
 
-class GameScenes
+class GameWorld
 {
 public:
-    GameScenes();
-    ~GameScenes();
+    GameWorld();
+    ~GameWorld();
 
     bool isOpen() const;
     void Input();

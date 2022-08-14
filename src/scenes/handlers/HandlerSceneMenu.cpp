@@ -6,19 +6,19 @@
 ******************************************************************************/
 
 #include "HandlerSceneMenu.h"
-#include "../../controls/GameScenes.h"
+#include "../../controls/GameWorld.h"
 #include "../../controls/GameState.h"
 
 #include <SFML/Graphics.hpp>
 
 namespace zuma {
 
-bool HandlerSceneMenu::isOpen(GameScenes *scene) const
+bool HandlerSceneMenu::isOpen(GameWorld *scene) const
 {
     return scene->isOpen();
 }
 
-void HandlerSceneMenu::Input(GameScenes *scene) 
+void HandlerSceneMenu::Input(GameWorld *scene) 
 {
     sf::Event event;
     while (scene->getWindow()->pollEvent(event)) {
@@ -50,13 +50,13 @@ void HandlerSceneMenu::Input(GameScenes *scene)
     } 
 }
 
-void HandlerSceneMenu::Update(GameScenes *scene)
+void HandlerSceneMenu::Update(GameWorld *scene)
 {
     scene->Update();
     scene->getSceneMainMenu()->Draw(scene->getWindow());
 }
 
-void HandlerSceneMenu::Render(GameScenes *scene)
+void HandlerSceneMenu::Render(GameWorld *scene)
 {
     scene->Render();
 }

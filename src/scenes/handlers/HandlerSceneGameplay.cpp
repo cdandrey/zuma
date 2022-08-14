@@ -6,17 +6,17 @@
 ******************************************************************************/
 
 #include "HandlerSceneGameplay.h"
-#include "../../controls/GameScenes.h"
+#include "../../controls/GameWorld.h"
 #include "../../controls/GameState.h"
 
 namespace zuma {
 
-bool HandlerSceneGameplay::isOpen(GameScenes *scene) const
+bool HandlerSceneGameplay::isOpen(GameWorld *scene) const
 {
     return scene->isOpen();
 }
 
-void HandlerSceneGameplay::Input(GameScenes *scene) 
+void HandlerSceneGameplay::Input(GameWorld *scene) 
 {
     sf::Event event;
     while (scene->getWindow()->pollEvent(event)) {
@@ -37,14 +37,14 @@ void HandlerSceneGameplay::Input(GameScenes *scene)
 
 }
 
-void HandlerSceneGameplay::Update(GameScenes *scene)
+void HandlerSceneGameplay::Update(GameWorld *scene)
 {
     scene->Update();
     scene->getSceneGameplay()->update();
     scene->getSceneGameplay()->draw(scene->getWindow());
 }
 
-void HandlerSceneGameplay::Render(GameScenes *scene)
+void HandlerSceneGameplay::Render(GameWorld *scene)
 {
     scene->Render();
 }

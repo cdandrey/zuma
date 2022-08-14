@@ -5,13 +5,13 @@ find_package(SFML 2.5 COMPONENTS graphics system window REQUIRED)
 
 set(controls_headers
     controls/Engine.h
-    controls/GameScenes.h
+    controls/GameWorld.h
     controls/GameState.h
 )
 
 set(controls_sources
     controls/Engine.cpp
-    controls/GameScenes.cpp
+    controls/GameWorld.cpp
     controls/GameState.cpp
 )
 

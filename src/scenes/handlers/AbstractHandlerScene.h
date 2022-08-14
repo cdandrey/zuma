@@ -11,7 +11,7 @@
 
 namespace zuma {
 
-class GameScenes;
+class GameWorld;
 
 class AbstractHandlerScene
 {
@@ -19,10 +19,10 @@ public:
 
     virtual ~AbstractHandlerScene() = default;
 
-    virtual bool isOpen(GameScenes *scene) const = 0;
-    virtual void Input(GameScenes *scene) = 0;
-    virtual void Update(GameScenes *scene) = 0;
-    virtual void Render(GameScenes *scene) = 0;
+    virtual bool isOpen(GameWorld *scene) const = 0;
+    virtual void Input(GameWorld *scene) = 0;
+    virtual void Update(GameWorld *scene) = 0;
+    virtual void Render(GameWorld *scene) = 0;
 };
 
 using AbstractHandlerSceneUPtr = std::unique_ptr<AbstractHandlerScene>;

@@ -1,11 +1,11 @@
 /******************************************************************************
 **
-** File      GameScenes.cpp
+** File      GameWorld.cpp
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
 
-#include "GameScenes.h"
+#include "GameWorld.h"
 #include "GameState.h"
 
 #include <SFML/Graphics.hpp>
@@ -14,17 +14,17 @@
 namespace zuma
 {
 
-GameScenes::GameScenes()
+GameWorld::GameWorld()
 {
     Create();
 }
 
-GameScenes::~GameScenes()
+GameWorld::~GameWorld()
 {
     Destroy();
 }
 
-void GameScenes::Create() 
+void GameWorld::Create() 
 {
     m_windowUPtr = std::make_unique<sf::RenderWindow>(sf::VideoMode{1920,1080},"Zuma");
     m_gameStateUPtr = std::make_unique<GameState>();
@@ -33,17 +33,17 @@ void GameScenes::Create()
     m_sceneScoreUptr = std::make_unique<SceneScore>(sf::Vector2u{1920,1080});
 }
 
-void GameScenes::Destroy()
+void GameWorld::Destroy()
 {
     m_windowUPtr->close();
 }
 
-bool GameScenes::isOpen() const 
+bool GameWorld::isOpen() const 
 {
     return m_windowUPtr->isOpen();
 }
 
-void GameScenes::Input()
+void GameWorld::Input()
 {
     sf::Event event;
     while (m_windowUPtr->pollEvent(event))
@@ -57,37 +57,37 @@ void GameScenes::Input()
     }
 }
 
-void GameScenes::Update()
+void GameWorld::Update()
 {
     m_windowUPtr->clear(sf::Color::White);
 }
 
-void GameScenes::Render() 
+void GameWorld::Render() 
 {
     m_windowUPtr->display();
 }
 
-sf::RenderWindow *GameScenes::getWindow() const
+sf::RenderWindow *GameWorld::getWindow() const
 {
     return m_windowUPtr.get();
 }
 
-GameState *GameScenes::getGameState() const 
+GameState *GameWorld::getGameState() const 
 {
     return m_gameStateUPtr.get();
 }
 
-SceneMainMenu* GameScenes::getSceneMainMenu() const
+SceneMainMenu* GameWorld::getSceneMainMenu() const
 {
     return m_sceneMainMenuUptr.get();
 }
 
-SceneGameplay *GameScenes::getSceneGameplay() const
+SceneGameplay *GameWorld::getSceneGameplay() const
 {
     return m_sceneGameplayUptr.get();
 }
 
-SceneScore *GameScenes::getSceneScore() const
+SceneScore *GameWorld::getSceneScore() const
 {
     return m_sceneScoreUptr.get();
 }

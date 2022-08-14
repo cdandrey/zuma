@@ -7,8 +7,6 @@
 
 #pragma once
 
-#include <SFML/System.hpp>
-
 namespace zuma
 {
 

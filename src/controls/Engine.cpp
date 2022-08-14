@@ -6,7 +6,7 @@
 ******************************************************************************/
 
 #include "Engine.h"
-#include "GameScenes.h"
+#include "GameWorld.h"
 #include "GameState.h"
 
 namespace zuma 
@@ -14,7 +14,7 @@ namespace zuma
 
 void Engine::exec()
 {
-    auto scene = std::make_unique<GameScenes>();
+    auto scene = std::make_unique<GameWorld>();
     auto handler = scene->getGameState()->getHandlerOfState();
 
     while (handler->isOpen(scene.get()))

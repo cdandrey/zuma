@@ -22,13 +22,18 @@ public:
     explicit SceneGameplay(sf::Vector2u windowSize);
     ~SceneGameplay() = default;
     
+    bool gameOver() const;
     void rotateGun(sf::Vector2f position);
     void update();
     void draw(sf::RenderWindow *window);
 
 private:
-    std::shared_ptr<ObjectGun> m_gun;
-    std::forward_list<ObjectBall> m_balls;
+    sf::Vector2u m_size;
+    ObjectBall m_fakeBallOnStartPosition;
+    ObjectGun m_gun;
+    std::list<ObjectBall> m_balls;
+
+    void nextSceneCalculation();
 };
 
-}
+}   // namespace zuma

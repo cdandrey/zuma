@@ -19,8 +19,9 @@ public:
     ObjectBall(sf::Vector2u windowSize, sf::Color color);
     ~ObjectBall() = default;
 
-    void update();
+    void updateGraphics();
     void draw(sf::RenderWindow *window);
+    bool hasColission(const ObjectBall *ball) const;
 
 private:
     sf::CircleShape m_circle;

@@ -42,6 +42,9 @@ void HandlerSceneGameplay::Update(GameWorld *scene)
     scene->Update();
     scene->getSceneGameplay()->update();
     scene->getSceneGameplay()->draw(scene->getWindow());
+    if (scene->getSceneGameplay()->gameOver()) {
+        scene->getGameState()->changed(GameState::State::Score);
+    }
 }
 
 void HandlerSceneGameplay::Render(GameWorld *scene)

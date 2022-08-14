@@ -18,7 +18,7 @@ public:
 	AbstractCommand() = default;
 	virtual ~AbstractCommand() = default;
 
-	virtual Result<void> execute() = 0;
+	virtual Result<void> execute(float elapsedTime) = 0;
 	static constexpr float cRadiansToGradusCoef = 180.0f / 3.14f;
 };
 

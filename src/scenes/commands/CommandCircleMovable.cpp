@@ -16,11 +16,11 @@ CommandCircleMovable::CommandCircleMovable(const AbstractAdapterMovablePtr& mova
 {
 }
 
-Result<void> CommandCircleMovable::execute()
+Result<void> CommandCircleMovable::execute(float elapsedTime)
 {
-    const auto onGetPosition = [this](const PositionProperty::type& position) -> Result<void> {
-        const auto onGetOrigin = [this, &position](const OriginProperty::type& origin) -> Result<void> {
-            const auto onSetPosition = [this, &position, &origin](const CircleVelocityProperty::type& circleVelocity) -> Result<void> {
+    const auto onGetPosition = [this,elapsedTime](const PositionProperty::type& position) -> Result<void> {
+        const auto onGetOrigin = [this,elapsedTime,position](const OriginProperty::type& origin) -> Result<void> {
+            const auto onSetPosition = [this, elapsedTime, position, origin](const CircleVelocityProperty::type& circleVelocity) -> Result<void> {
                 const auto cy = origin.y - position.y;
                 const auto cx = position.x - origin.x;
                 const auto safeAtan = [this](float x, float y) -> float {
@@ -28,7 +28,7 @@ Result<void> CommandCircleMovable::execute()
                                      : 90.0f;
                 };
                 auto ca = safeAtan(cx,cy);
-                ca += circleVelocity;
+                ca += (circleVelocity * elapsedTime);
                 ca /= AbstractCommand::cRadiansToGradusCoef;
                 const auto r = std::sqrtf(cx*cx + cy*cy);
                 const auto dy = std::cosf(ca) * r;

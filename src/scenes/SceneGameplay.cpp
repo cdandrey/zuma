@@ -24,16 +24,18 @@ SceneGameplay::SceneGameplay(sf::Vector2u windowSize)
 
 void SceneGameplay::update()
 {
+    m_elapsedTime = m_clock.restart();
+
     auto adapter = std::make_shared<AdapterRotable>(&m_gun);
     auto cmd = std::make_shared<CommandRotable>(adapter);
-    cmd->execute();
+    cmd->execute(m_elapsedTime.asSeconds());
     m_gun.update();
 
     for (auto &ball : m_balls) {
-        ball.setProperty(CircleVelocityProperty::key,0.1f);
+        ball.setProperty(CircleVelocityProperty::key,10.0f);
         const auto adapter = std::make_shared<AdapterMovable>(&ball);
         const auto cmd = std::make_shared<CommandCircleMovable>(adapter);
-        cmd->execute();
+        cmd->execute(m_elapsedTime.asSeconds());
         ball.updateGraphics();
     }
 

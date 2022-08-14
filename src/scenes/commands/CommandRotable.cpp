@@ -16,10 +16,10 @@ CommandRotable::CommandRotable(const AbstractAdapterRotablePtr& rotable)
 {
 }
 
-Result<void> CommandRotable::execute()
+Result<void> CommandRotable::execute(float /*elapsedTime*/)
 {
     const auto onGetRotatePosition = [this](const PositionProperty::type& position) -> Result<void> {
-        const auto onSetDirection = [this, &position](const RotatePositionProperty::type& rotatePosition) -> Result<void> {
+        const auto onSetDirection = [this, position](const RotatePositionProperty::type& rotatePosition) -> Result<void> {
             const auto dy = rotatePosition.y - position.y;
             const auto dx = rotatePosition.x - position.x;
             auto angel = std::atanf(dy / dx) * AbstractCommand::cRadiansToGradusCoef;

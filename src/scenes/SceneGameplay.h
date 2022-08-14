@@ -33,6 +33,9 @@ private:
     ObjectGun m_gun;
     std::list<ObjectBall> m_balls;
 
+    sf::Clock m_clock;
+    sf::Time m_elapsedTime;
+
     void nextSceneCalculation();
 };
 

@@ -17,7 +17,7 @@ class CommandCircleMovable : public AbstractCommand
 public:
     explicit CommandCircleMovable(const AbstractAdapterMovablePtr& rotable);
 
-    Result<void> execute() override;
+    Result<void> execute(float elapsedTime) override;
 
 private:
     AbstractAdapterMovablePtr m_movable;

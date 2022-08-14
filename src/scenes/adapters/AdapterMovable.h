@@ -18,6 +18,7 @@ public:
     virtual ~AbstractAdapterMovable() = default;
 
     virtual Result<PositionProperty::type> getPosition() const = 0;
+    virtual Result<DirectionProperty::type> getDirection() const = 0;
     virtual Result<OriginProperty::type> getOrigin() const = 0;
     virtual Result<VelocityProperty::type> getVelocity() const = 0;
     virtual Result<CircleVelocityProperty::type> getCircleVelocity() const = 0;
@@ -32,6 +33,7 @@ public:
     explicit AdapterMovable(AbstractObject *object);
 
     Result<PositionProperty::type> getPosition() const override;
+    Result<DirectionProperty::type> getDirection() const override;
     Result<OriginProperty::type> getOrigin() const override;
     Result<VelocityProperty::type> getVelocity() const override;
     Result<CircleVelocityProperty::type> getCircleVelocity() const override;

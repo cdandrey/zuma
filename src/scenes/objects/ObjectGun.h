@@ -19,9 +19,7 @@ public:
     explicit ObjectGun(sf::Vector2u windowSize);
     ~ObjectGun() = default;
 
-    void setColor(sf::Color color);
-
-    void update();
+    void updateGraphics();
     void draw(sf::RenderWindow *window);
 
 private:

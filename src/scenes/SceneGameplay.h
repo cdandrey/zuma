@@ -11,8 +11,6 @@
 #include "objects/ObjectBall.h"
 #include "../utils/Randomizer.h"
 
-#include <forward_list>
-
 namespace zuma
 {
 
@@ -24,7 +22,8 @@ public:
     ~SceneGameplay() = default;
     
     bool gameOver() const;
-    void rotateGun(sf::Vector2f position);
+    void gunRotate(sf::Vector2f position);
+    void gunShot(sf::Vector2f position);
     void update();
     void draw(sf::RenderWindow *window);
 
@@ -33,13 +32,17 @@ private:
     ObjectBall m_fakeBallOnStartPosition;
     ObjectGun m_gun;
     std::list<ObjectBall> m_balls;
+    ObjectBall m_shotBall;
 
     sf::Clock m_clock;
     sf::Time m_elapsedTime;
 
     RandomizeColor m_randColor;
 
-    void nextSceneCalculation();
+    void calculatNextScene();
+    void spawnBalls();
+    void gunLoad();
+    void shotBallOut();
 };
 
 }   // namespace zuma

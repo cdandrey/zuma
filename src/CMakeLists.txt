@@ -75,11 +75,13 @@ set(adapters_sources
 set(commands_headers
     scenes/commands/AbstractCommand.h
     scenes/commands/CommandCircleMovable.h
+    scenes/commands/CommandMovable.h
     scenes/commands/CommandRotable.h
 )
 
 set(commands_sources
     scenes/commands/CommandCircleMovable.cpp
+    scenes/commands/CommandMovable.cpp
     scenes/commands/CommandRotable.cpp
 )
 

@@ -15,6 +15,7 @@ ObjectBall::ObjectBall(sf::Vector2u windowSize, sf::Color color)
     : AbstractObject {std::pair {RadiusProperty::key, config::object_ball::radius(windowSize)},
                       std::pair {OriginProperty::key, config::object_ball::origin(windowSize)},
                       std::pair {PositionProperty::key, config::object_ball::startPosition(windowSize)},
+                      std::pair {DirectionProperty::key, DirectionProperty::type {}},
                       std::pair {VelocityProperty::key, VelocityProperty::type {}},
                       std::pair {CircleVelocityProperty::key, CircleVelocityProperty::type {}},
                       std::pair {ColorProperty::key, color}}

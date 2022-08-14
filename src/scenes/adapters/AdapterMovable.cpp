@@ -24,11 +24,19 @@ AdapterMovable::AdapterMovable(AbstractObject *object)
 Result<PositionProperty::type> AdapterMovable::getPosition() const
 {
     const auto onGetPosition = [](AbstractObject *object) -> Result<PropertyValue> {
-
         return object->getProperty(PositionProperty::key);
     };
 
     return getObject().and_then(onGetPosition).and_then(PositionProperty::cast);
+}
+
+Result<DirectionProperty::type> AdapterMovable::getDirection() const
+{
+    const auto onGetDirection = [](AbstractObject *object) -> Result<PropertyValue> {
+        return object->getProperty(DirectionProperty::key);
+    };
+
+    return getObject().and_then(onGetDirection).and_then(DirectionProperty::cast);
 }
 
 Result<OriginProperty::type> AdapterMovable::getOrigin() const

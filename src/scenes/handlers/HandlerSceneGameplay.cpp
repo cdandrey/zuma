@@ -31,7 +31,11 @@ void HandlerSceneGameplay::Input(GameWorld *scene)
         }
         if (event.type == sf::Event::MouseMoved) {
             const auto mousePos = sf::Mouse::getPosition(*scene->getWindow());
-            scene->getSceneGameplay()->rotateGun(static_cast<sf::Vector2f>(mousePos));
+            scene->getSceneGameplay()->gunRotate(static_cast<sf::Vector2f>(mousePos));
+        }
+        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+            scene->getSceneGameplay()->gunShot({static_cast<float>(event.mouseButton.x),
+                                                static_cast<float>(event.mouseButton.y)});
         }
     }
 

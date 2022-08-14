@@ -23,8 +23,8 @@ constexpr PropertyKey PropertyKeyColor = "Color";
 constexpr PropertyKey PropertyKeyRadius = "Radius";
 
 SPECIFY_PROPERTY_TYPE(PropertyKeyPosition, sf::Vector2f, PositionProperty)              // current point
-SPECIFY_PROPERTY_TYPE(PropertyKeyVelocity, sf::Vector2f, VelocityProperty)              // change point relative to current position
-SPECIFY_PROPERTY_TYPE(PropertyKeyDirection, float, DirectionProperty)                   // angle relative to current position
+SPECIFY_PROPERTY_TYPE(PropertyKeyVelocity, float, VelocityProperty)                     // count pixels per tick
+SPECIFY_PROPERTY_TYPE(PropertyKeyDirection, float, DirectionProperty)                   // angle relative to current position in radians
 SPECIFY_PROPERTY_TYPE(PropertyKeyRotatePosition, sf::Vector2f, RotatePositionProperty)  // repositioning in the direction of a given point
 SPECIFY_PROPERTY_TYPE(PropertyKeyCircleVelocity, float, CircleVelocityProperty)         // angel per tick
 SPECIFY_PROPERTY_TYPE(PropertyKeyOrigin, sf::Vector2f, OriginProperty)                  // origin point

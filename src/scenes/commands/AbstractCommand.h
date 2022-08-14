@@ -8,7 +8,6 @@
 #pragma once
 
 #include "../../types/ExceptionError.h"
-#include <memory>
 
 namespace zuma {
 
@@ -19,9 +18,6 @@ public:
 	virtual ~AbstractCommand() = default;
 
 	virtual Result<void> execute(float elapsedTime) = 0;
-	static constexpr float cRadiansToGradusCoef = 180.0f / 3.14f;
 };
-
-using AbstractCommandPtr = std::shared_ptr<AbstractCommand>;
 
 }  // namespace zuma

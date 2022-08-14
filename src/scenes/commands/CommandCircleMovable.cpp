@@ -23,19 +23,11 @@ Result<void> CommandCircleMovable::execute(float elapsedTime)
             const auto onSetPosition = [this, elapsedTime, position, origin](const CircleVelocityProperty::type& circleVelocity) -> Result<void> {
                 const auto cy = origin.y - position.y;
                 const auto cx = position.x - origin.x;
-                const auto safeAtan = [this](float x, float y) -> float {
-                    return y != 0.0f ? std::atanf(x / y) * AbstractCommand::cRadiansToGradusCoef
-                                     : 90.0f;
-                };
-                auto ca = safeAtan(cx,cy);
+                auto ca = std::atan2f(cx,cy);
                 ca += (circleVelocity * elapsedTime);
-                ca /= AbstractCommand::cRadiansToGradusCoef;
                 const auto r = std::sqrtf(cx*cx + cy*cy);
                 const auto dy = std::cosf(ca) * r;
                 const auto dx = std::sinf(ca) * r;
-                if (cy < 0) {
-                    return m_movable->setPosition(PositionProperty::type{origin.x - dx, origin.y + dy});
-                }
                 return m_movable->setPosition(PositionProperty::type{origin.x + dx, origin.y - dy});
             };
             return m_movable->getCircleVelocity().and_then(onSetPosition);

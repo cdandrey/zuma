@@ -15,8 +15,9 @@ namespace zuma
 namespace config
 {
 
-static const sf::Vector2u cBaseWindowSize = {1920,1080};
-static const sf::Vector2u cBaseWindowCenter = {cBaseWindowSize.x / 2, cBaseWindowSize.y / 2};
+static const     sf::Vector2u cBaseWindowSize = {1920,1080};
+static const     sf::Vector2u cBaseWindowCenter = {cBaseWindowSize.x / 2, cBaseWindowSize.y / 2};
+static constexpr float cRadiansToDegreeCoef = 180.0f / 3.14f;
 
 static sf::Vector2f scaleFactor(sf::Vector2u windowSize)
 {

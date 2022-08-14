@@ -22,7 +22,7 @@ Result<void> CommandRotable::execute()
         const auto onSetDirection = [this, &position](const RotatePositionProperty::type& rotatePosition) -> Result<void> {
             const auto dy = rotatePosition.y - position.y;
             const auto dx = rotatePosition.x - position.x;
-            auto angel = std::atanf(dy / dx) * AbstractCommand::coef_180_div_pi;
+            auto angel = std::atanf(dy / dx) * AbstractCommand::cRadiansToGradusCoef;
             if (dx < 0 && dy > 0) {
                 angel += 180;
             } else if (dx < 0 && dy < 0) {

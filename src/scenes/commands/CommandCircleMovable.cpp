@@ -23,12 +23,12 @@ Result<void> CommandCircleMovable::execute()
             const auto onSetPosition = [this, &position, &origin](const CircleVelocityProperty::type& circleVelocity) -> Result<void> {
                 const auto cy = origin.y - position.y;
                 const auto cx = position.x - origin.x;
-                auto ca = std::atanf(cx / cy) * AbstractCommand::coef_180_div_pi;
+                auto ca = std::atanf(cx / cy) * AbstractCommand::cRadiansToGradusCoef;
                 ca += circleVelocity;
                 if (cy < 0) {
                     ca += 180;
                 }
-                ca /= AbstractCommand::coef_180_div_pi;
+                ca /= AbstractCommand::cRadiansToGradusCoef;
                 const auto r = std::sqrtf(cy*cy + cx*cx);
                 const auto dy = std::cosf(ca) * r;
                 const auto dx = std::sinf(ca) * r;

@@ -12,8 +12,6 @@
 
 namespace zuma {
 
-//constexpr float coef_180_div_pi = 180.0f / 3.14f;
-
 class AbstractCommand
 {
 public:
@@ -21,7 +19,7 @@ public:
 	virtual ~AbstractCommand() = default;
 
 	virtual Result<void> execute() = 0;
-	static constexpr float coef_180_div_pi = 180.0f / 3.14f;
+	static constexpr float cRadiansToGradusCoef = 180.0f / 3.14f;
 };
 
 using AbstractCommandPtr = std::shared_ptr<AbstractCommand>;

@@ -19,7 +19,7 @@ class Gameplay
 {
 public:
 
-    explicit Gameplay(sf::Vector2u size);
+    explicit Gameplay(sf::Vector2u windowSize);
     ~Gameplay() = default;
     
     void rotateGun(sf::Vector2f position);

@@ -16,7 +16,7 @@ namespace zuma
 class ObjectGun : public AbstractObject
 {
 public:
-    explicit ObjectGun(sf::Vector2f position);
+    explicit ObjectGun(sf::Vector2u windowSize);
     ~ObjectGun() = default;
 
     void setColor(sf::Color color);

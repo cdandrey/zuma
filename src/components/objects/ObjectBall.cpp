@@ -6,18 +6,19 @@
 ******************************************************************************/
 
 #include "ObjectBall.h"
+#include "../../types/Config.h"
 
 namespace zuma
 {
 
-ObjectBall::ObjectBall(sf::Vector2f origin, sf::Vector2f position, sf::Color color) 
-    : AbstractObject {std::pair {OriginProperty::key, origin},
-                      std::pair {PositionProperty::key, position},
+ObjectBall::ObjectBall(sf::Vector2u windowSize, sf::Color color) 
+    : AbstractObject {std::pair {OriginProperty::key, config::object_ball::origin(windowSize)},
+                      std::pair {PositionProperty::key, config::object_ball::startPosition(windowSize)},
                       std::pair {VelocityProperty::key, VelocityProperty::type {}},
                       std::pair {CircleVelocityProperty::key, CircleVelocityProperty::type {}},
                       std::pair {ColorProperty::key, color}}
 {
-    m_circle.setRadius(25.0f);
+    m_circle.setRadius(config::object_ball::radius(windowSize));
     update();
 }
 

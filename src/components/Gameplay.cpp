@@ -15,10 +15,10 @@
 namespace zuma
 {
 
-Gameplay::Gameplay(sf::Vector2u size)
+Gameplay::Gameplay(sf::Vector2u windowSize)
 {
-    m_gun = std::make_shared<ObjectGun>(sf::Vector2f{size.x / 2.0f, size.y / 2.0f});
-    m_balls.emplace_after(m_balls.before_begin(),sf::Vector2f{size.x / 2.0f, size.y / 2.0f}, sf::Vector2f{size.x / 2.0f, 60.0f}, sf::Color::Red);
+    m_gun = std::make_shared<ObjectGun>(windowSize);
+    m_balls.emplace_after(m_balls.before_begin(),windowSize, sf::Color::Red);
 }
 
 void Gameplay::update()

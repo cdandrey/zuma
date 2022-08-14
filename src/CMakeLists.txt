@@ -97,6 +97,14 @@ set(types_sources
     types/ExceptionError.cpp
 )
 
+set(utils_headers
+    utils/Randomizer.h
+)
+
+set(utils_sources
+    utils/Randomizer.cpp
+)
+
 add_library(ZumaLib
     STATIC
     ${adapters_headers}
@@ -116,6 +124,8 @@ add_library(ZumaLib
     ${types_headers}
     ${types_sources}
     ${configs_headers}
+    ${utils_headers}
+    ${utils_sources}
 )
 
 target_link_libraries(ZumaLib

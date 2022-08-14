@@ -152,6 +152,19 @@ namespace object_ball
 
 }   // namespace object_ball
         
+namespace utils 
+{
+    static const std::vector<sf::Color> cColors = {
+            sf::Color::Yellow,
+            sf::Color::Cyan,
+            sf::Color::Magenta,
+            sf::Color::Red,
+            sf::Color::Green,
+            sf::Color::Blue,
+            sf::Color::Black
+        };
+}   // namespace utils
+
 }   // namespace config
 
 }   // namespace zuma

@@ -9,6 +9,7 @@
 
 #include "objects/ObjectGun.h"
 #include "objects/ObjectBall.h"
+#include "../utils/Randomizer.h"
 
 #include <forward_list>
 
@@ -35,6 +36,8 @@ private:
 
     sf::Clock m_clock;
     sf::Time m_elapsedTime;
+
+    RandomizeColor m_randColor;
 
     void nextSceneCalculation();
 };

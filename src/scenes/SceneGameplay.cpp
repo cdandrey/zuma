@@ -64,7 +64,7 @@ bool SceneGameplay::gameOver() const
 void SceneGameplay::nextSceneCalculation() 
 {
     if (m_balls.empty() || !m_fakeBallOnStartPosition.hasColission(&m_balls.back())) {
-        m_balls.emplace_back(m_size,sf::Color::Red);
+        m_balls.emplace_back(m_size,m_randColor.getRandomColor());
     }
 }
 

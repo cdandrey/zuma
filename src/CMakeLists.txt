@@ -3,82 +3,91 @@ cmake_minimum_required(VERSION 3.3)
 set(SFML_STATIC_LIBRARIES TRUE)
 find_package(SFML 2.5 COMPONENTS graphics system window REQUIRED)
 
-set(engine_headers
-    engine/Engine.h
-    engine/GameState.h
+set(controls_headers
+    controls/Engine.h
+    controls/GameScenes.h
+    controls/GameState.h
 )
 
-set(engine_sources
-    engine/Engine.cpp
-    engine/GameState.cpp
+set(controls_sources
+    controls/Engine.cpp
+    controls/GameScenes.cpp
+    controls/GameState.cpp
 )
 
-set(scenes_headers
-    engine/scenes/AbstractHandlerScene.h
-    engine/scenes/HandlerSceneGameplay.h
-    engine/scenes/HandlerSceneMenu.h
-    engine/scenes/HandlerSceneScore.h
-    engine/scenes/Scene.h
+set(handlers_headers
+    scenes/handlers/AbstractHandlerScene.h
+    scenes/handlers/HandlerSceneGameplay.h
+    scenes/handlers/HandlerSceneMenu.h
+    scenes/handlers/HandlerSceneScore.h
 )
 
-set(scenes_sources
-    engine/scenes/HandlerSceneGameplay.cpp
-    engine/scenes/HandlerSceneMenu.cpp
-    engine/scenes/HandlerSceneScore.cpp
-    engine/scenes/Scene.cpp
+set(handlers_sources
+    scenes/handlers/HandlerSceneGameplay.cpp
+    scenes/handlers/HandlerSceneMenu.cpp
+    scenes/handlers/HandlerSceneScore.cpp
 )
 
 set(components_headers
-    components/Button.h
-    components/Gameplay.h
-    components/MainMenu.h
-    components/Score.h
+    scenes/components/Button.h
 )
 
 set(components_sources
-    components/Button.cpp
-    components/Gameplay.cpp
-    components/MainMenu.cpp
-    components/Score.cpp
+    scenes/components/Button.cpp
+)
+ 
+set(scenes_headers
+    scenes/SceneGameplay.h
+    scenes/SceneMainMenu.h
+    scenes/SceneScore.h
+)
+
+set(scenes_sources
+    scenes/SceneGameplay.cpp
+    scenes/SceneMainMenu.cpp
+    scenes/SceneScore.cpp
 )
 
 set(objects_headers
-    components/objects/AbstractObject.h
-    components/objects/ObjectBall.h
-    components/objects/ObjectGun.h
+    scenes/objects/AbstractObject.h
+    scenes/objects/ObjectBall.h
+    scenes/objects/ObjectGun.h
 )
 
 set(objects_sources
-    components/objects/AbstractObject.cpp
-    components/objects/ObjectBall.cpp
-    components/objects/ObjectGun.cpp
+    scenes/objects/AbstractObject.cpp
+    scenes/objects/ObjectBall.cpp
+    scenes/objects/ObjectGun.cpp
 )
 
 set(adapters_headers
-    components/adapters/AbstractAdapter.h
-    components/adapters/AdapterMovable.h
-    components/adapters/AdapterRotable.h
+    scenes/adapters/AbstractAdapter.h
+    scenes/adapters/AdapterMovable.h
+    scenes/adapters/AdapterRotable.h
 )
 
 set(adapters_sources
-    components/adapters/AbstractAdapter.cpp
-    components/adapters/AdapterMovable.cpp
-    components/adapters/AdapterRotable.cpp
+    scenes/adapters/AbstractAdapter.cpp
+    scenes/adapters/AdapterMovable.cpp
+    scenes/adapters/AdapterRotable.cpp
 )
 
 set(commands_headers
-    components/commands/AbstractCommand.h
-    components/commands/CommandCircleMovable.h
-    components/commands/CommandRotable.h
+    scenes/commands/AbstractCommand.h
+    scenes/commands/CommandCircleMovable.h
+    scenes/commands/CommandRotable.h
 )
 
 set(commands_sources
-    components/commands/CommandCircleMovable.cpp
-    components/commands/CommandRotable.cpp
+    scenes/commands/CommandCircleMovable.cpp
+    scenes/commands/CommandRotable.cpp
+)
+
+set(configs_headers
+    configs/Config.h
 )
 
 set(types_headers
-    types/Config.h
     types/ExceptionError.h
     types/Property.h
     types/Property_internal.h
@@ -94,16 +103,19 @@ add_library(ZumaLib
     ${adapters_sources}
     ${commands_headers}
     ${commands_sources}
-    ${components_headers}
-    ${components_sources}
-    ${engine_headers}
-    ${engine_sources}
-    ${objects_headers}
-    ${objects_sources}
     ${scenes_headers}
     ${scenes_sources}
+    ${components_headers}
+    ${components_sources}
+    ${controls_headers}
+    ${controls_sources}
+    ${objects_headers}
+    ${objects_sources}
+    ${handlers_headers}
+    ${handlers_sources}
     ${types_headers}
     ${types_sources}
+    ${configs_headers}
 )
 
 target_link_libraries(ZumaLib

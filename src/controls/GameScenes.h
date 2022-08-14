@@ -1,6 +1,6 @@
 /******************************************************************************
 **
-** File      Scene.h
+** File      GameScenes.h
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
@@ -9,9 +9,9 @@
 
 #include <memory>
 
-#include "../../components/Gameplay.h"
-#include "../../components/MainMenu.h"
-#include "../../components/Score.h"
+#include "../scenes/SceneGameplay.h"
+#include "../scenes/SceneMainMenu.h"
+#include "../scenes/SceneScore.h"
 
 namespace sf {
 class RenderWindow;
@@ -22,11 +22,11 @@ namespace zuma
 
 class GameState;
 
-class Scene
+class GameScenes
 {
 public:
-    Scene();
-    ~Scene();
+    GameScenes();
+    ~GameScenes();
 
     bool isOpen() const;
     void Input();
@@ -35,16 +35,16 @@ public:
 
     sf::RenderWindow* getWindow() const;
     GameState* getGameState() const;
-    MainMenu* getMainMenu() const;
-    Gameplay* getGameplay() const;
-    Score* getScore() const;
+    SceneMainMenu* getSceneMainMenu() const;
+    SceneGameplay* getSceneGameplay() const;
+    SceneScore* getSceneScore() const;
 
 private:
     std::unique_ptr<GameState> m_gameStateUPtr;
     std::unique_ptr<sf::RenderWindow> m_windowUPtr;
-    std::unique_ptr<MainMenu> m_mainMenuUPtr;
-    std::unique_ptr<Gameplay> m_gameplayUPtr;
-    std::unique_ptr<Score> m_scoreUPtr;
+    std::unique_ptr<SceneMainMenu> m_sceneMainMenuUptr;
+    std::unique_ptr<SceneGameplay> m_sceneGameplayUptr;
+    std::unique_ptr<SceneScore> m_sceneScoreUptr;
 
     void Create();
     void Destroy();

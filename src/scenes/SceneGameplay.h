@@ -1,6 +1,6 @@
 /******************************************************************************
 **
-** File      Gameplay.h
+** File      SceneGameplay.h
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
@@ -15,12 +15,12 @@
 namespace zuma
 {
 
-class Gameplay
+class SceneGameplay
 {
 public:
 
-    explicit Gameplay(sf::Vector2u windowSize);
-    ~Gameplay() = default;
+    explicit SceneGameplay(sf::Vector2u windowSize);
+    ~SceneGameplay() = default;
     
     void rotateGun(sf::Vector2f position);
     void update();

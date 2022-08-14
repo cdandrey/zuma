@@ -1,22 +1,22 @@
 /******************************************************************************
 **
-** File      MainMenu.h
+** File      SceneMainMenu.h
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
 
 #pragma once
 
-#include "Button.h"
+#include "components/Button.h"
 
 namespace zuma
 {
 
-class MainMenu
+class SceneMainMenu
 {
 public:
-    explicit MainMenu(sf::Vector2u size);
-    ~MainMenu() = default;
+    explicit SceneMainMenu(sf::Vector2u size);
+    ~SceneMainMenu() = default;
 
     void Draw(sf::RenderWindow *window) const;
 

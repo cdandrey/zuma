@@ -7,9 +7,9 @@
 #include <iostream>
 
 #include "GameState.h"
-#include "scenes/HandlerSceneMenu.h"
-#include "scenes/HandlerSceneGameplay.h"
-#include "scenes/HandlerSceneScore.h"
+#include "../scenes/handlers/HandlerSceneMenu.h"
+#include "../scenes/handlers/HandlerSceneGameplay.h"
+#include "../scenes/handlers/HandlerSceneScore.h"
 
 namespace zuma
 {

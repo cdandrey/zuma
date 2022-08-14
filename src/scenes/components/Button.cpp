@@ -6,15 +6,13 @@
 ******************************************************************************/
 
 #include "Button.h"
-#include "../types/Config.h"
-#include <iostream>
+#include "../../configs/Config.h"
 
 namespace zuma
 {
 
 Button::Button(sf::Vector2f size,sf::Vector2f position,const std::string &text)
 {
-    std::cout << position.y << std::endl;
     m_rect.setSize(size);
     m_rect.setOrigin(config::origin(size));
     m_rect.setPosition(position);

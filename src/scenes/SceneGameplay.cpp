@@ -1,12 +1,12 @@
 /******************************************************************************
 **
-** File      Gameplay.cpp
+** File      SceneGameplay.cpp
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
 
 #include <iostream>
-#include "Gameplay.h"
+#include "SceneGameplay.h"
 #include "adapters/AdapterRotable.h"
 #include "adapters/AdapterMovable.h"
 #include "commands/CommandRotable.h"
@@ -15,13 +15,13 @@
 namespace zuma
 {
 
-Gameplay::Gameplay(sf::Vector2u windowSize)
+SceneGameplay::SceneGameplay(sf::Vector2u windowSize)
 {
     m_gun = std::make_shared<ObjectGun>(windowSize);
     m_balls.emplace_after(m_balls.before_begin(),windowSize, sf::Color::Red);
 }
 
-void Gameplay::update()
+void SceneGameplay::update()
 {
     auto adapter = std::make_shared<AdapterRotable>(m_gun.get());
     auto cmd = std::make_shared<CommandRotable>(adapter);
@@ -37,12 +37,12 @@ void Gameplay::update()
     }
 }
 
-void Gameplay::rotateGun(sf::Vector2f position)
+void SceneGameplay::rotateGun(sf::Vector2f position)
 {
     m_gun->setProperty(RotatePositionProperty::key,position);
 }
 
-void Gameplay::draw(sf::RenderWindow *window)
+void SceneGameplay::draw(sf::RenderWindow *window)
 {
     m_gun->draw(window);
     for (auto &ball : m_balls) {

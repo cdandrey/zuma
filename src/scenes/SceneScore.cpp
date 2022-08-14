@@ -1,17 +1,17 @@
 /******************************************************************************
 **
-** File      Score.cpp
+** File      SceneScore.cpp
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
 
-#include "Score.h"
-#include "../types/Config.h"
+#include "SceneScore.h"
+#include "../configs/Config.h"
 
 namespace zuma
 {
 
-Score::Score(sf::Vector2u windowSize)
+SceneScore::SceneScore(sf::Vector2u windowSize)
     : m_buttonOk{config::score::button::size(windowSize),config::score::button::position(windowSize),"OK"}
 {
     m_rectBox.setSize(config::score::box::size(windowSize));
@@ -22,18 +22,18 @@ Score::Score(sf::Vector2u windowSize)
     m_rectBox.setOutlineColor(config::score::box::cBorderColor);
 }
 
-void Score::Draw(sf::RenderWindow *window) const
+void SceneScore::Draw(sf::RenderWindow *window) const
 {
     window->draw(m_rectBox);
     m_buttonOk.Draw(window);
 }
 
-bool Score::ButtonOkMouseClick(sf::Vector2i mousePos)
+bool SceneScore::ButtonOkMouseClick(sf::Vector2i mousePos)
 {
     return m_buttonOk.isHover(mousePos);
 }
 
-void Score::ButtonOkMouseHover(sf::Vector2i mousePos)
+void SceneScore::ButtonOkMouseHover(sf::Vector2i mousePos)
 {
     m_buttonOk.unhovered();
 

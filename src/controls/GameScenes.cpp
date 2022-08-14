@@ -1,12 +1,12 @@
 /******************************************************************************
 **
-** File      Scene.cpp
+** File      GameScenes.cpp
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
 
-#include "Scene.h"
-#include "../GameState.h"
+#include "GameScenes.h"
+#include "GameState.h"
 
 #include <SFML/Graphics.hpp>
 
@@ -14,36 +14,36 @@
 namespace zuma
 {
 
-Scene::Scene()
+GameScenes::GameScenes()
 {
     Create();
 }
 
-Scene::~Scene()
+GameScenes::~GameScenes()
 {
     Destroy();
 }
 
-void Scene::Create() 
+void GameScenes::Create() 
 {
     m_windowUPtr = std::make_unique<sf::RenderWindow>(sf::VideoMode{1920,1080},"Zuma");
     m_gameStateUPtr = std::make_unique<GameState>();
-    m_mainMenuUPtr = std::make_unique<MainMenu>(sf::Vector2u{1920,1080});
-    m_gameplayUPtr = std::make_unique<Gameplay>(sf::Vector2u{1920,1080});
-    m_scoreUPtr = std::make_unique<Score>(sf::Vector2u{1920,1080});
+    m_sceneMainMenuUptr = std::make_unique<SceneMainMenu>(sf::Vector2u{1920,1080});
+    m_sceneGameplayUptr = std::make_unique<SceneGameplay>(sf::Vector2u{1920,1080});
+    m_sceneScoreUptr = std::make_unique<SceneScore>(sf::Vector2u{1920,1080});
 }
 
-void Scene::Destroy()
+void GameScenes::Destroy()
 {
     m_windowUPtr->close();
 }
 
-bool Scene::isOpen() const 
+bool GameScenes::isOpen() const 
 {
     return m_windowUPtr->isOpen();
 }
 
-void Scene::Input()
+void GameScenes::Input()
 {
     sf::Event event;
     while (m_windowUPtr->pollEvent(event))
@@ -57,39 +57,39 @@ void Scene::Input()
     }
 }
 
-void Scene::Update()
+void GameScenes::Update()
 {
     m_windowUPtr->clear(sf::Color::White);
 }
 
-void Scene::Render() 
+void GameScenes::Render() 
 {
     m_windowUPtr->display();
 }
 
-sf::RenderWindow *Scene::getWindow() const
+sf::RenderWindow *GameScenes::getWindow() const
 {
     return m_windowUPtr.get();
 }
 
-GameState *Scene::getGameState() const 
+GameState *GameScenes::getGameState() const 
 {
     return m_gameStateUPtr.get();
 }
 
-MainMenu* Scene::getMainMenu() const
+SceneMainMenu* GameScenes::getSceneMainMenu() const
 {
-    return m_mainMenuUPtr.get();
+    return m_sceneMainMenuUptr.get();
 }
 
-Gameplay *Scene::getGameplay() const
+SceneGameplay *GameScenes::getSceneGameplay() const
 {
-    return m_gameplayUPtr.get();
+    return m_sceneGameplayUptr.get();
 }
 
-Score *Scene::getScore() const
+SceneScore *GameScenes::getSceneScore() const
 {
-    return m_scoreUPtr.get();
+    return m_sceneScoreUptr.get();
 }
 
 }

@@ -4,22 +4,21 @@
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
-#include <iostream>
 
 #include "HandlerSceneMenu.h"
-#include "Scene.h"
-#include "../GameState.h"
+#include "../../controls/GameScenes.h"
+#include "../../controls/GameState.h"
 
 #include <SFML/Graphics.hpp>
 
 namespace zuma {
 
-bool HandlerSceneMenu::isOpen(Scene *scene) const
+bool HandlerSceneMenu::isOpen(GameScenes *scene) const
 {
     return scene->isOpen();
 }
 
-void HandlerSceneMenu::Input(Scene *scene) 
+void HandlerSceneMenu::Input(GameScenes *scene) 
 {
     sf::Event event;
     while (scene->getWindow()->pollEvent(event)) {
@@ -34,30 +33,30 @@ void HandlerSceneMenu::Input(Scene *scene)
 
         if (event.type == sf::Event::MouseMoved) {
             const auto mousePos = sf::Mouse::getPosition(*scene->getWindow());
-            scene->getMainMenu()->ButtonPlayMouseHover(mousePos);
-            scene->getMainMenu()->ButtonExitMouseHover(mousePos);
+            scene->getSceneMainMenu()->ButtonPlayMouseHover(mousePos);
+            scene->getSceneMainMenu()->ButtonExitMouseHover(mousePos);
         }
 
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
-            if (scene->getMainMenu()->ButtonPlayMouseClick({event.mouseButton.x,event.mouseButton.y})) {
+            if (scene->getSceneMainMenu()->ButtonPlayMouseClick({event.mouseButton.x,event.mouseButton.y})) {
                 scene->getGameState()->changed(GameState::State::Play);
             }
 
-            if (scene->getMainMenu()->ButtonExitMouseClick({event.mouseButton.x,event.mouseButton.y})) {
+            if (scene->getSceneMainMenu()->ButtonExitMouseClick({event.mouseButton.x,event.mouseButton.y})) {
                 scene->getWindow()->close();
             }
         }
     } 
 }
 
-void HandlerSceneMenu::Update(Scene *scene)
+void HandlerSceneMenu::Update(GameScenes *scene)
 {
     scene->Update();
-    scene->getMainMenu()->Draw(scene->getWindow());
+    scene->getSceneMainMenu()->Draw(scene->getWindow());
 }
 
-void HandlerSceneMenu::Render(Scene *scene)
+void HandlerSceneMenu::Render(GameScenes *scene)
 {
     scene->Render();
 }

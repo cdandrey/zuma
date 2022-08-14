@@ -17,10 +17,10 @@ public:
     HandlerSceneScore() = default;
     ~HandlerSceneScore() = default;
 
-    bool isOpen(Scene *scene) const override;
-    void Input(Scene *scene) override;
-    void Update(Scene *scene) override;
-    void Render(Scene *scene) override;
+    bool isOpen(GameScenes *scene) const override;
+    void Input(GameScenes *scene) override;
+    void Update(GameScenes *scene) override;
+    void Render(GameScenes *scene) override;
 };
 
 }

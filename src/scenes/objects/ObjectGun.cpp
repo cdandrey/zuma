@@ -6,7 +6,7 @@
 ******************************************************************************/
 
 #include "ObjectGun.h"
-#include "../../types/Config.h"
+#include "../../configs/Config.h"
 
 namespace zuma
 {

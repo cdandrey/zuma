@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "scenes/AbstractHandlerScene.h"
+#include "../scenes/handlers/AbstractHandlerScene.h"
 
 namespace zuma
 {

@@ -1,17 +1,22 @@
-#include "HandlerSceneGameplay.h"
-#include "Scene.h"
-#include "../GameState.h"
+/******************************************************************************
+**
+** File      HandlerSceneGameplay.cpp
+** Author    Andrii Sydorenko
+**
+******************************************************************************/
 
-#include <iostream>
+#include "HandlerSceneGameplay.h"
+#include "../../controls/GameScenes.h"
+#include "../../controls/GameState.h"
 
 namespace zuma {
 
-bool HandlerSceneGameplay::isOpen(Scene *scene) const
+bool HandlerSceneGameplay::isOpen(GameScenes *scene) const
 {
     return scene->isOpen();
 }
 
-void HandlerSceneGameplay::Input(Scene *scene) 
+void HandlerSceneGameplay::Input(GameScenes *scene) 
 {
     sf::Event event;
     while (scene->getWindow()->pollEvent(event)) {
@@ -26,21 +31,20 @@ void HandlerSceneGameplay::Input(Scene *scene)
         }
         if (event.type == sf::Event::MouseMoved) {
             const auto mousePos = sf::Mouse::getPosition(*scene->getWindow());
-            //std::cout << mousePos.x << ", " << mousePos.y << std::endl;
-            scene->getGameplay()->rotateGun(static_cast<sf::Vector2f>(mousePos));
+            scene->getSceneGameplay()->rotateGun(static_cast<sf::Vector2f>(mousePos));
         }
     }
 
 }
 
-void HandlerSceneGameplay::Update(Scene *scene)
+void HandlerSceneGameplay::Update(GameScenes *scene)
 {
     scene->Update();
-    scene->getGameplay()->update();
-    scene->getGameplay()->draw(scene->getWindow());
+    scene->getSceneGameplay()->update();
+    scene->getSceneGameplay()->draw(scene->getWindow());
 }
 
-void HandlerSceneGameplay::Render(Scene *scene)
+void HandlerSceneGameplay::Render(GameScenes *scene)
 {
     scene->Render();
 }

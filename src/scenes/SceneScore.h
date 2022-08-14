@@ -1,22 +1,22 @@
 /******************************************************************************
 **
-** File      Score.h
+** File      SceneScore.h
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
 
 #pragma once
 
-#include "Button.h"
+#include "components/Button.h"
 
 namespace zuma
 {
 
-class Score
+class SceneScore
 {
 public:
-    explicit Score(sf::Vector2u windowSize);
-    ~Score() = default;
+    explicit SceneScore(sf::Vector2u windowSize);
+    ~SceneScore() = default;
 
     void Draw(sf::RenderWindow *window) const;
 

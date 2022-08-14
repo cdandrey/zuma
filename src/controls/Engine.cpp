@@ -1,12 +1,12 @@
 /******************************************************************************
 **
-** File      Engine.h
+** File      Engine.cpp
 ** Author    Andrii Sydorenko
 **
 ******************************************************************************/
 
 #include "Engine.h"
-#include "scenes/Scene.h"
+#include "GameScenes.h"
 #include "GameState.h"
 
 namespace zuma 
@@ -14,7 +14,7 @@ namespace zuma
 
 void Engine::exec()
 {
-    auto scene = std::make_unique<Scene>();
+    auto scene = std::make_unique<GameScenes>();
     auto handler = scene->getGameState()->getHandlerOfState();
 
     while (handler->isOpen(scene.get()))

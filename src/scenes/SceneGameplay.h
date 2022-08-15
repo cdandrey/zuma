@@ -29,7 +29,7 @@ public:
 
 private:
     
-    using itBall = std::list<ObjectBall>::iterator;
+    using IteratorBall = std::list<ObjectBall>::iterator;
 
     sf::Vector2u m_size;
     ObjectGun m_gun;
@@ -42,21 +42,38 @@ private:
 
     RandomizeColor m_randColor;
 
-    enum class StateColision {
-        Inserting,
-        Erasing,
-        Undefine
+    enum class Mode {
+        Start,
+        WaitShot,
+        CheckCollision,
+        StartExpansion,
+        StopExpansion,
+        Insertion,
+        SearchIdentic,
+        EraseIdentic,
+        StartComprasion,
+        StopComprasion
     };
+
+    auto start();
+    auto waitShot();
+    auto checkCollision();
+    auto startExpansion(IteratorBall first, IteratorBall last);
+    auto stopExpansion(IteratorBall itCollisionBall,const ObjectBall &copyBeforeCollisionBall);
+    auto insertion(IteratorBall itCollisionBall,const ObjectBall &copyBeforeCollisionBall);
+    auto searchIdentic(IteratorBall itInsertBall);
+    auto eraseIdentic(IteratorBall first, IteratorBall last);
+    auto startComprasion(IteratorBall last);
+    auto stopComprasion(IteratorBall itCollisionBall);
 
     void calculatNextScene();
     void spawnBalls();
     void gunLoad();
-    void shotBallOut();
-    auto checkInsertingBall(itBall itColisionBall,const ObjectBall &colisionBall);
-    auto checkCollisionBall();
+    bool shotBallOut();
 
-    void setBallsProperty(itBall begin, itBall end, PropertyKey key, PropertyValue value);
-    void shotBallFree();
+    void setBallsProperty(IteratorBall first, IteratorBall last, PropertyKey key, PropertyValue value);
+    void ballFree(ObjectBall &ball);
+    std::string colorToStr(sf::Color c);
 };
 
 }   // namespace zuma

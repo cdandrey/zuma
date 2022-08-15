@@ -100,59 +100,185 @@ bool SceneGameplay::gameOver() const
     return (m_balls.size() > 1) && m_fakeBallOnStartPosition.hasCollision(&m_balls.front());
 }
 
-void SceneGameplay::setBallsProperty(itBall begin, itBall end, PropertyKey key, PropertyValue value)
+void SceneGameplay::setBallsProperty(IteratorBall first, IteratorBall last, PropertyKey key, PropertyValue value)
 {
-    for (auto it = begin; it != end; ++it) {
+    for (auto it = first; it != last; ++it) {
         it->setProperty(key,value);
     }
 }
 
-auto SceneGameplay::checkCollisionBall()
+auto SceneGameplay::start()
 {
+    setBallsProperty(m_balls.begin(),m_balls.end(),CircleVelocityProperty::key,config::gameplay::cBaseCircleVelocity);
+    return Mode::WaitShot;
+}
+
+auto SceneGameplay::waitShot()
+{
+    const auto velosityShoBall = m_shotBall.getProperty(VelocityProperty::key).and_then(VelocityProperty::cast);
+
+    if (velosityShoBall.value() > 0.0f) {
+        return Mode::CheckCollision;
+    }
+
+    return Mode::WaitShot;
+}
+
+auto SceneGameplay::checkCollision()
+{
+    if (shotBallOut()) {
+        return std::tuple{m_balls.begin(),ObjectBall{m_size,{}},Mode::Start};
+    }
+
     for (auto it = m_balls.begin(); it != m_balls.end(); ++it) {
         if (m_shotBall.hasCollision(&(*it))) {
             m_shotBall.setProperty(VelocityProperty::key,0.0f);
-            setBallsProperty(m_balls.begin(),std::next(it,1),CircleVelocityProperty::key,config::gameplay::cBaseAccelCircleVelocity);
-            setBallsProperty(std::next(it,1),m_balls.end(),CircleVelocityProperty::key,0.0f);
-            return std::tuple{it,*it,StateColision::Inserting};
+            setBallsProperty(m_balls.begin(),m_balls.end(),CircleVelocityProperty::key,0.0f);
+            return std::tuple{it,*std::prev(it,1),Mode::StartExpansion};
         }
     }
 
-    return std::tuple{m_balls.begin(),ObjectBall{m_size,{}},StateColision::Undefine};
+    return std::tuple{m_balls.begin(),ObjectBall{m_size,{}},Mode::CheckCollision};
 }
 
-auto SceneGameplay::checkInsertingBall(itBall itColisionBall,const ObjectBall &colisionBall)
+auto SceneGameplay::startExpansion(IteratorBall first,IteratorBall last)
 {
-    if (!colisionBall.hasCollision(&(*itColisionBall))) {
-        auto itInsert = m_balls.insert(itColisionBall,colisionBall);
-        const auto colorInsert = m_shotBall.getProperty(ColorProperty::key).and_then(ColorProperty::cast);
-        itInsert->setProperty(ColorProperty::key,colorInsert.value());
-        setBallsProperty(m_balls.begin(),m_balls.end(),CircleVelocityProperty::key,config::gameplay::cBaseCircleVelocity);
-        shotBallFree();
-        return StateColision::Undefine;
+    setBallsProperty(first,last,CircleVelocityProperty::key,config::gameplay::cBaseAccelCircleVelocity);
+    return Mode::StopExpansion;
+}
+
+auto SceneGameplay::stopExpansion(IteratorBall itCollisionBall,const ObjectBall &copyBeforeCollisionBall)
+{
+    if (!copyBeforeCollisionBall.hasCollision(&(*itCollisionBall))) {
+        setBallsProperty(m_balls.begin(),std::next(itCollisionBall,1),CircleVelocityProperty::key,0.0f);
+        return Mode::Insertion;
+    }
+
+    return Mode::StopExpansion;
+}
+
+auto SceneGameplay::insertion(IteratorBall itCollisionBall,const ObjectBall &copyBeforeCollisionBall)
+{
+    auto itInsertBall = m_balls.insert(itCollisionBall,copyBeforeCollisionBall);
+    
+    const auto onSetColor = [this,itInsertBall] (sf::Color color) {
+        itInsertBall->setProperty(ColorProperty::key,color);
+    };
+    
+    m_shotBall.getProperty(ColorProperty::key).and_then(ColorProperty::cast).map(onSetColor);
+
+    ballFree(m_shotBall);
+    
+    return std::tuple{itInsertBall, Mode::SearchIdentic};
+}
+
+auto SceneGameplay::searchIdentic(IteratorBall itInsertBall)
+{
+    IteratorBall it = itInsertBall;
+    const auto onColor = [](IteratorBall it) -> sf::Color {
+        return it->getProperty(ColorProperty::key).and_then(ColorProperty::cast).value();
+    };
+
+    const auto colorInsert = onColor(itInsertBall);
+
+    IteratorBall itIdentLast = itInsertBall;
+    while (++it != m_balls.end() && onColor(it) == colorInsert) {
+        itIdentLast = it;
+    }
+
+    if (itIdentLast != itInsertBall && itIdentLast != m_balls.end()){
+        ++itIdentLast;
     }
     
-    return StateColision::Inserting;
+    it = itInsertBall;
+    IteratorBall itIdentFirts = itInsertBall;
+    while (it-- != m_balls.begin() && onColor(it) == colorInsert) {
+        itIdentFirts = it;
+    }
+
+    if (it == m_balls.begin() && onColor(it) == colorInsert) {
+        itIdentFirts = it;
+    }
+
+    if (itIdentFirts == itIdentLast) {
+        return std::tuple{itIdentFirts,itIdentLast,Mode::Start};
+    }
+
+    for (it = itIdentFirts; it != itIdentLast; ++it) {
+        ballFree(*it);
+    }
+
+    return std::tuple{itIdentFirts,itIdentLast,Mode::EraseIdentic};
+}
+
+auto SceneGameplay::eraseIdentic(IteratorBall first, IteratorBall last)
+{
+    m_balls.erase(first,last);
+    return Mode::StartComprasion;
+}
+
+auto SceneGameplay::startComprasion(IteratorBall last)
+{
+    if (last == m_balls.begin()) {
+        return std::tuple{last, Mode::Start};
+    }
+
+    setBallsProperty(m_balls.begin(),last,CircleVelocityProperty::key,config::gameplay::cBaseReversCircleVelocity);
+    return std::tuple{last,Mode::StopComprasion};
+}
+
+auto SceneGameplay::stopComprasion(IteratorBall itCollisionBall)
+{
+    if (itCollisionBall->hasCollision(&(*std::prev(itCollisionBall,1)))) {
+        setBallsProperty(m_balls.begin(),itCollisionBall,CircleVelocityProperty::key,0.0f);
+        return Mode::Start;
+    }
+
+    return Mode::StopComprasion;
 }
 
 void SceneGameplay::calculatNextScene() 
 {
-    static itBall itColisionBall = m_balls.begin();
-    static ObjectBall colisionBall {m_size,{}};
-    static StateColision stateCollision {StateColision::Undefine};
+    static IteratorBall itCollisionBall;
+    static IteratorBall itIdenticFirst;
+    static IteratorBall itIdenticLast;
+    static ObjectBall copyBeforeCollisionBall {m_size,{}};
+    static Mode mode {Mode::Start};
 
-    switch (stateCollision)
+    switch (mode)
     {
-    case StateColision::Inserting:
-        stateCollision = checkInsertingBall(itColisionBall,colisionBall);
-        break;
-    case StateColision::Erasing:
-        break;
-    case StateColision::Undefine:
-        spawnBalls();
+    case Mode::Start:
         gunLoad();
-        shotBallOut();
-        std::tie(itColisionBall, colisionBall,stateCollision) = checkCollisionBall();
+        mode = start();
+        break;
+    case Mode::WaitShot:
+        spawnBalls();
+        mode = waitShot();
+        break;
+    case Mode::CheckCollision:
+        spawnBalls();
+        std::tie(itCollisionBall,copyBeforeCollisionBall,mode) = checkCollision();
+        break;
+    case Mode::StartExpansion:
+        mode = startExpansion(m_balls.begin(),itCollisionBall);
+        break;
+    case Mode::StopExpansion:
+        mode = stopExpansion(std::prev(itCollisionBall,1),copyBeforeCollisionBall);
+        break;
+    case Mode::Insertion:
+        std::tie(itCollisionBall,mode) = insertion(itCollisionBall,copyBeforeCollisionBall);
+        break;
+    case Mode::SearchIdentic:
+        std::tie(itIdenticFirst,itIdenticLast,mode) = searchIdentic(itCollisionBall);
+        break;
+    case Mode::EraseIdentic:
+        mode = eraseIdentic(itIdenticFirst,itIdenticLast);
+        break;
+    case Mode::StartComprasion:
+        std::tie(itCollisionBall, mode) = startComprasion(itIdenticLast);
+        break;
+    case Mode::StopComprasion:
+        mode = stopComprasion(itCollisionBall);
         break;
     default:
         break;
@@ -170,45 +296,53 @@ void SceneGameplay::spawnBalls()
 
 void SceneGameplay::gunLoad()
 {
-    const auto onGetColorGun = [this] (float shotVelocity) {
-        const auto onLoad = [this, shotVelocity] (sf::Color color) {
-            if (shotVelocity == 0.0f && color == sf::Color::White) {
-                const auto color = m_randColor.getRandomColor();
-                m_gun.setProperty(ColorProperty::key,color);
-                m_shotBall.setProperty(ColorProperty::key,color);
+    const auto color = m_randColor.getRandomColor();
+    m_gun.setProperty(ColorProperty::key,color);
+    m_shotBall.setProperty(ColorProperty::key,color);
+}
+
+bool SceneGameplay::shotBallOut()
+{
+    const auto onGetPosition = [this] (float radius) -> Result<bool> {
+        const auto onOut = [this, radius] (sf::Vector2f position) -> Result<bool> {
+            if (position.x >= m_size.x - radius || position.y >= m_size.y - radius || position.x <= radius || position.y <= radius) {
+                ballFree(m_shotBall);
+                return true;
             }
+            return false;
         };
-        m_gun.getProperty(ColorProperty::key).and_then(ColorProperty::cast).map(onLoad);
+        return m_shotBall.getProperty(PositionProperty::key).and_then(PositionProperty::cast).and_then(onOut);
     };
-    m_shotBall.getProperty(VelocityProperty::key).and_then(VelocityProperty::cast).map(onGetColorGun);
+    return m_shotBall.getProperty(RadiusProperty::key).and_then(RadiusProperty::cast).and_then(onGetPosition).value();
 }
 
-void SceneGameplay::shotBallOut()
+void SceneGameplay::ballFree(ObjectBall &ball)
 {
-    const auto onGetRadius = [this](float velocity) {
-        if (velocity > 0.0f) {
-            const auto onGetPosition = [this,velocity] (float radius) {
-                const auto onOut = [this, velocity, radius] (sf::Vector2f position) {
-                    if (position.x >= m_size.x - radius || position.y >= m_size.y - radius || position.x <= radius || position.y <= radius) {
-                        shotBallFree();
-                    }
-                };
-                m_shotBall.getProperty(PositionProperty::key).and_then(PositionProperty::cast).map(onOut);
-            };
-            m_shotBall.getProperty(RadiusProperty::key).and_then(RadiusProperty::cast).map(onGetPosition);
-        }
-    };
-
-    m_shotBall.getProperty(VelocityProperty::key).and_then(VelocityProperty::cast).map(onGetRadius);
+    ball.setProperty(PositionProperty::key, sf::Vector2f{0.0f,0.0f});
+    ball.setProperty(RadiusProperty::key,0.0f);
+    ball.setProperty(DirectionProperty::key,0.0f);
+    ball.setProperty(VelocityProperty::key,0.0f);
+    ball.setProperty(ColorProperty::key,sf::Color::White);
+    ball.setProperty(CircleVelocityProperty::key,0.0f);
 }
 
-void SceneGameplay::shotBallFree()
+std::string SceneGameplay::colorToStr(sf::Color color)
 {
-    m_shotBall.setProperty(PositionProperty::key, sf::Vector2f{0.0f,0.0f});
-    m_shotBall.setProperty(RadiusProperty::key,0.0f);
-    m_shotBall.setProperty(DirectionProperty::key,0.0f);
-    m_shotBall.setProperty(VelocityProperty::key,0.0f);
-    m_shotBall.setProperty(ColorProperty::key,sf::Color::White);
+    if (color == sf::Color::Yellow)
+        return "yellow";
+    else if (color == sf::Color::Cyan)
+        return "cyan";
+    else if (color == sf::Color::Magenta)
+        return "magenta";
+    else if (color == sf::Color::Red)
+        return "red";
+    else if (color == sf::Color::Green)
+        return "green";
+    else if (color == sf::Color::Blue)
+        return "blue";
+    else if (color == sf::Color::Black)
+        return "black";
+    
+    return "undefine";
 }
-
 }   // namespace zuma

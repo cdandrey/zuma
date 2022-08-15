@@ -39,7 +39,6 @@ AbstractHandlerSceneUPtr GameState::getHandlerOfState()
 void GameState::changed(State state)
 {
     m_state = state;
-    std::cout << "Chaged state: " << static_cast<int>(m_state) << std::endl;
 }
 
 bool GameState::isChanged() const

@@ -44,16 +44,26 @@ void ObjectBall::updateGraphics()
     getProperty(ColorProperty::key).and_then(ColorProperty::cast).map(onSetColor);
 }
 
+bool ObjectBall::hasCollision(sf::Vector2f position) const
+{
+    const auto onGetRadius = [this,position] (sf::Vector2f thisPosition) -> Result<bool> {
+        const auto onCheckCollison = [position,thisPosition] (float thisRadius) -> Result<bool> {
+            const auto dx = (thisPosition.x - position.x);
+            const auto dy = (thisPosition.y - position.y);
+            return  2.0f * thisRadius > std::sqrtf(dx*dx + dy*dy);
+        };
+        return getProperty(RadiusProperty::key).and_then(RadiusProperty::cast).and_then(onCheckCollison);
+    };
+    return getProperty(PositionProperty::key).and_then(PositionProperty::cast).and_then(onGetRadius).value();
+}
+
 bool ObjectBall::hasCollision(const ObjectBall *ball) const
 {
-    const auto thisPosition = this->getProperty(PositionProperty::key).and_then(PositionProperty::cast);
-    const auto position = ball->getProperty(PositionProperty::key).and_then(PositionProperty::cast);
-    const auto thisRadius = this->getProperty(RadiusProperty::key).and_then(RadiusProperty::cast);
-    const auto radius = ball->getProperty(RadiusProperty::key).and_then(RadiusProperty::cast);
-    const auto dx = (thisPosition.value().x - position.value().x);
-    const auto dy = (thisPosition.value().y - position.value().y);
-
-    return  (thisRadius.value() + radius.value()) > std::sqrtf(dx*dx + dy*dy);
+    const auto onHasCollision = [this] (sf::Vector2f position) -> Result<bool> {
+        return hasCollision(position);
+    };
+    return ball->getProperty(PositionProperty::key).and_then(PositionProperty::cast)
+                                                   .and_then(onHasCollision).value();
 }
 
 void ObjectBall::draw(sf::RenderWindow *window)

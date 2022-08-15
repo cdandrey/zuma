@@ -162,16 +162,17 @@ namespace utils
             sf::Color::Red,
             sf::Color::Green,
             sf::Color::Blue,
-            sf::Color::Black
+            sf::Color{230, 130, 0, 255} // orange
         };
 }   // namespace utils
 
 namespace gameplay
 {
 
-static constexpr float cBaseCircleVelocity = 0.2f;
-static constexpr float cBaseAccelCircleVelocity = 1.0f;
+static constexpr float cBaseCircleVelocity = 0.1f;
+static constexpr float cBaseAccelCircleVelocity = 5.0f;
 static constexpr float cBaseReversCircleVelocity = -5.0f;
+static constexpr float cBaseShotVelocity = 1000.0f;
 
 }   // namespace gameplay
 

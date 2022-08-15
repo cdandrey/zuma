@@ -21,7 +21,8 @@ public:
 
     void updateGraphics();
     void draw(sf::RenderWindow *window);
-    bool hasCollision(const ObjectBall *ball) const;
+    bool hasCollision(sf::Vector2f position) const;
+    bool hasCollision(const ObjectBall *ball) const; 
 
 private:
     sf::CircleShape m_circle;

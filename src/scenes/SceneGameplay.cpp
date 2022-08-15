@@ -21,8 +21,8 @@ namespace zuma
 SceneGameplay::SceneGameplay(sf::Vector2u windowSize)
     : m_size{windowSize}
     , m_gun{m_size}
-    , m_shotBall{{},sf::Color::White}
-    , m_fakeBallOnStartPosition{m_size,{}}
+    , m_shotBall{{},sf::Color::Transparent}
+    , m_balls{{m_size,sf::Color::Transparent}}  // set fake first ball for correct reverse itaration
 {
 }
 
@@ -73,7 +73,7 @@ void SceneGameplay::gunShot(sf::Vector2f position)
     const auto onShot = [this,position](sf::Color color) {
         if (color != sf::Color::White) {
             m_gun.setProperty(ColorProperty::key,sf::Color::White);
-            m_shotBall.setProperty(VelocityProperty::key,600.0f);
+            m_shotBall.setProperty(VelocityProperty::key,config::gameplay::cBaseShotVelocity);
             m_shotBall.setProperty(RadiusProperty::key,config::object_ball::radius(m_size));
             const auto gunPosition = m_gun.getProperty(PositionProperty::key).and_then(PositionProperty::cast);
             const auto y = position.y - gunPosition.value().y;
@@ -97,7 +97,7 @@ void SceneGameplay::gunShot(sf::Vector2f position)
 
 bool SceneGameplay::gameOver() const
 {
-    return (m_balls.size() > 1) && m_fakeBallOnStartPosition.hasCollision(&m_balls.front());
+    return (m_balls.size() > 3) && m_balls.back().hasCollision(&(*std::next(m_balls.begin(),1)));  // next because first ball is fake
 }
 
 void SceneGameplay::setBallsProperty(IteratorBall first, IteratorBall last, PropertyKey key, PropertyValue value)
@@ -115,30 +115,39 @@ auto SceneGameplay::start()
 
 auto SceneGameplay::waitShot()
 {
-    const auto velosityShoBall = m_shotBall.getProperty(VelocityProperty::key).and_then(VelocityProperty::cast);
-
-    if (velosityShoBall.value() > 0.0f) {
-        return Mode::CheckCollision;
-    }
-
-    return Mode::WaitShot;
+    const auto onShot = [] (float velocity) -> Result<Mode> {
+        if (velocity > 0.0f) {
+            return Mode::CheckCollision;
+        }
+        return Mode::WaitShot;
+    };
+    
+    return m_shotBall.getProperty(VelocityProperty::key)
+                     .and_then(VelocityProperty::cast)
+                     .and_then(onShot).value();
 }
 
 auto SceneGameplay::checkCollision()
 {
     if (shotBallOut()) {
-        return std::tuple{m_balls.begin(),ObjectBall{m_size,{}},Mode::Start};
+        return std::tuple{IteratorBall{}, sf::Vector2f{}, Mode::Start};
     }
 
-    for (auto it = m_balls.begin(); it != m_balls.end(); ++it) {
+    // next begin because first ball is fake
+    for (auto it = std::next(m_balls.begin(),1); it != m_balls.end(); ++it) {
         if (m_shotBall.hasCollision(&(*it))) {
             m_shotBall.setProperty(VelocityProperty::key,0.0f);
             setBallsProperty(m_balls.begin(),m_balls.end(),CircleVelocityProperty::key,0.0f);
-            return std::tuple{it,*std::prev(it,1),Mode::StartExpansion};
+            const auto onPosition = [] (IteratorBall it) -> sf::Vector2f {
+                return it->getProperty(PositionProperty::key).and_then(PositionProperty::cast).value();
+            };
+            // take prev position of ball because insertion is do before ball of collision
+            // and position insert ball equal prev ball of collision
+            return std::tuple{it,onPosition(std::prev(it,1)),Mode::StartExpansion};
         }
     }
 
-    return std::tuple{m_balls.begin(),ObjectBall{m_size,{}},Mode::CheckCollision};
+    return std::tuple{IteratorBall{}, sf::Vector2f{}, Mode::CheckCollision};
 }
 
 auto SceneGameplay::startExpansion(IteratorBall first,IteratorBall last)
@@ -147,91 +156,95 @@ auto SceneGameplay::startExpansion(IteratorBall first,IteratorBall last)
     return Mode::StopExpansion;
 }
 
-auto SceneGameplay::stopExpansion(IteratorBall itCollisionBall,const ObjectBall &copyBeforeCollisionBall)
+auto SceneGameplay::stopExpansion(IteratorBall itPrevCollisionBall,sf::Vector2f position)
 {
-    if (!copyBeforeCollisionBall.hasCollision(&(*itCollisionBall))) {
-        setBallsProperty(m_balls.begin(),std::next(itCollisionBall,1),CircleVelocityProperty::key,0.0f);
+    if (!itPrevCollisionBall->hasCollision(position)) {
+        // take next iterator because range = [first,last) and for include to range itPrev set last of next it
+        setBallsProperty(m_balls.begin(),std::next(itPrevCollisionBall,1),CircleVelocityProperty::key,0.0f);
         return Mode::Insertion;
     }
 
     return Mode::StopExpansion;
 }
 
-auto SceneGameplay::insertion(IteratorBall itCollisionBall,const ObjectBall &copyBeforeCollisionBall)
+auto SceneGameplay::insertion(IteratorBall itCollisionBall, sf::Vector2f position)
 {
-    auto itInsertBall = m_balls.insert(itCollisionBall,copyBeforeCollisionBall);
-    
-    const auto onSetColor = [this,itInsertBall] (sf::Color color) {
-        itInsertBall->setProperty(ColorProperty::key,color);
+    const auto onColor = [] (const ObjectBall &ball) -> sf::Color {
+        return ball.getProperty(ColorProperty::key).and_then(ColorProperty::cast).value();
     };
     
-    m_shotBall.getProperty(ColorProperty::key).and_then(ColorProperty::cast).map(onSetColor);
+    // insert equal prev itCollisionBall
+    auto insert = m_balls.emplace(itCollisionBall,m_size,onColor(m_shotBall));
+    insert->setProperty(PositionProperty::key,position);
 
     ballFree(m_shotBall);
     
-    return std::tuple{itInsertBall, Mode::SearchIdentic};
+    return std::tuple{insert, Mode::SearchIdentic};
 }
 
-auto SceneGameplay::searchIdentic(IteratorBall itInsertBall)
+auto SceneGameplay::searchIdentic(IteratorBall insert)
 {
     const auto onColor = [](IteratorBall it) -> sf::Color {
         return it->getProperty(ColorProperty::key).and_then(ColorProperty::cast).value();
     };
 
-    const auto colorInsert = onColor(itInsertBall);
+    const auto colorInsert = onColor(insert);
 
-    IteratorBall itIdentFirst = itInsertBall;
-    IteratorBall itIdentLast = itInsertBall;
+    IteratorBall first = insert;
+    IteratorBall last = insert;
 
-    IteratorBall it = itInsertBall;
+    IteratorBall it = insert;
     while (++it != m_balls.end() && onColor(it) == colorInsert) {
-        itIdentLast = it;
+        last = it;
     }
 
-    it = itInsertBall;
-    while (it-- != m_balls.begin() && onColor(it) == colorInsert) {
-        itIdentFirst = it;
+    it = insert;
+    // insert never is begin iterator, because first element is fake
+    // and not have check of collision
+    while (--it != m_balls.begin() && onColor(it) == colorInsert) {
+        first = it;
     }
     
-    if (it == m_balls.begin() && onColor(it) == colorInsert) {
-        itIdentFirst = it;
+    // if first == last not have identic by color balls
+    if (first == last) {
+        return std::tuple{IteratorBall{},IteratorBall{},Mode::Start};
     }
 
-    if (itIdentFirst == itIdentLast) {
-        return std::tuple{itIdentFirst,itIdentLast,Mode::Start};
-    }
-
-    if (itIdentLast != itInsertBall && itIdentLast != m_balls.end()){
-        ++itIdentLast;
+    // for include last iterator range [first,last) take next iterator after last
+    if (last != m_balls.end()){
+        ++last;
     }
     
-    for (it = itIdentFirst; it != itIdentLast; ++it) {
+    for (it = first; it != last; ++it) {
         ballFree(*it);
     }
 
-    return std::tuple{itIdentFirst,itIdentLast,Mode::EraseIdentic};
+    return std::tuple{first,last,Mode::EraseIdentic};
 }
 
 auto SceneGameplay::eraseIdentic(IteratorBall first, IteratorBall last)
 {
-    m_balls.erase(first,last);
-    return Mode::StartComprasion;
+    last = m_balls.erase(first,last);
+    return std::tuple(last, Mode::StartComprasion);
 }
 
 auto SceneGameplay::startComprasion(IteratorBall last)
 {
-    if (last == m_balls.begin()) {
-        return std::tuple{last, Mode::Start};
-    }
-
     setBallsProperty(m_balls.begin(),last,CircleVelocityProperty::key,config::gameplay::cBaseReversCircleVelocity);
-    return std::tuple{last,Mode::StopComprasion};
+
+    const auto onPosition = [this] (IteratorBall it) -> sf::Vector2f {
+        return it != m_balls.end() ? it->getProperty(PositionProperty::key).and_then(PositionProperty::cast).value()
+                                   : config::object_ball::startPosition(m_size);
+    };
+
+    // prev because it is the last remaining iterator after deletion
+    return std::tuple(std::prev(last,1),onPosition(last), Mode::StopComprasion);
 }
 
-auto SceneGameplay::stopComprasion(IteratorBall itCollisionBall)
+auto SceneGameplay::stopComprasion(IteratorBall last, sf::Vector2f position)
 {
-    if (itCollisionBall->hasCollision(&(*std::prev(itCollisionBall,1)))) {
-        setBallsProperty(m_balls.begin(),itCollisionBall,CircleVelocityProperty::key,0.0f);
+    if (last->hasCollision(position)) {
+        setBallsProperty(m_balls.begin(),last,CircleVelocityProperty::key,0.0f);
         return Mode::Start;
     }
 
@@ -241,9 +254,9 @@ auto SceneGameplay::stopComprasion(IteratorBall itCollisionBall)
 void SceneGameplay::calculatNextScene() 
 {
     static IteratorBall itCollisionBall;
-    static IteratorBall itIdenticFirst;
-    static IteratorBall itIdenticLast;
-    static ObjectBall copyBeforeCollisionBall {m_size,{}};
+    static IteratorBall first;
+    static IteratorBall last;
+    static sf::Vector2f position;
     static Mode mode {Mode::Start};
 
     switch (mode)
@@ -258,28 +271,28 @@ void SceneGameplay::calculatNextScene()
         break;
     case Mode::CheckCollision:
         spawnBalls();
-        std::tie(itCollisionBall,copyBeforeCollisionBall,mode) = checkCollision();
+        std::tie(itCollisionBall,position,mode) = checkCollision();
         break;
     case Mode::StartExpansion:
         mode = startExpansion(m_balls.begin(),itCollisionBall);
         break;
     case Mode::StopExpansion:
-        mode = stopExpansion(std::prev(itCollisionBall,1),copyBeforeCollisionBall);
+        mode = stopExpansion(std::prev(itCollisionBall,1),position);
         break;
     case Mode::Insertion:
-        std::tie(itCollisionBall,mode) = insertion(itCollisionBall,copyBeforeCollisionBall);
+        std::tie(itCollisionBall,mode) = insertion(itCollisionBall,position);
         break;
     case Mode::SearchIdentic:
-        std::tie(itIdenticFirst,itIdenticLast,mode) = searchIdentic(itCollisionBall);
+        std::tie(first,last,mode) = searchIdentic(itCollisionBall);
         break;
     case Mode::EraseIdentic:
-        mode = eraseIdentic(itIdenticFirst,itIdenticLast);
+        std::tie(last, mode) = eraseIdentic(first,last);
         break;
     case Mode::StartComprasion:
-        std::tie(itCollisionBall, mode) = startComprasion(itIdenticLast);
+        std::tie(last, position, mode) = startComprasion(last);
         break;
     case Mode::StopComprasion:
-        mode = stopComprasion(itCollisionBall);
+        mode = stopComprasion(last, position);
         break;
     default:
         break;
@@ -289,7 +302,7 @@ void SceneGameplay::calculatNextScene()
 
 void SceneGameplay::spawnBalls()
 {
-    if (m_balls.empty() || !m_fakeBallOnStartPosition.hasCollision(&m_balls.back())) {
+    if (!m_balls.back().hasCollision(config::object_ball::startPosition(m_size))) {
         m_balls.emplace_back(m_size,m_randColor.getRandomColor());
         m_balls.back().setProperty(CircleVelocityProperty::key,config::gameplay::cBaseCircleVelocity);
     }
@@ -327,23 +340,4 @@ void SceneGameplay::ballFree(ObjectBall &ball)
     ball.setProperty(CircleVelocityProperty::key,0.0f);
 }
 
-std::string SceneGameplay::colorToStr(sf::Color color)
-{
-    if (color == sf::Color::Yellow)
-        return "yellow";
-    else if (color == sf::Color::Cyan)
-        return "cyan";
-    else if (color == sf::Color::Magenta)
-        return "magenta";
-    else if (color == sf::Color::Red)
-        return "red";
-    else if (color == sf::Color::Green)
-        return "green";
-    else if (color == sf::Color::Blue)
-        return "blue";
-    else if (color == sf::Color::Black)
-        return "black";
-    
-    return "undefine";
-}
 }   // namespace zuma

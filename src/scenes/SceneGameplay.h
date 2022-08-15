@@ -35,7 +35,6 @@ private:
     ObjectGun m_gun;
     ObjectBall m_shotBall;
     std::list<ObjectBall> m_balls;
-    ObjectBall m_fakeBallOnStartPosition;
 
     sf::Clock m_clock;
     sf::Time m_elapsedTime;
@@ -59,12 +58,12 @@ private:
     auto waitShot();
     auto checkCollision();
     auto startExpansion(IteratorBall first, IteratorBall last);
-    auto stopExpansion(IteratorBall itCollisionBall,const ObjectBall &copyBeforeCollisionBall);
-    auto insertion(IteratorBall itCollisionBall,const ObjectBall &copyBeforeCollisionBall);
+    auto stopExpansion(IteratorBall itCollisionBall,sf::Vector2f insertPosition);
+    auto insertion(IteratorBall itCollisionBall,sf::Vector2f insertPosition);
     auto searchIdentic(IteratorBall itInsertBall);
     auto eraseIdentic(IteratorBall first, IteratorBall last);
     auto startComprasion(IteratorBall last);
-    auto stopComprasion(IteratorBall itCollisionBall);
+    auto stopComprasion(IteratorBall last, sf::Vector2f position);
 
     void calculatNextScene();
     void spawnBalls();
@@ -73,7 +72,6 @@ private:
 
     void setBallsProperty(IteratorBall first, IteratorBall last, PropertyKey key, PropertyValue value);
     void ballFree(ObjectBall &ball);
-    std::string colorToStr(sf::Color c);
 };
 
 }   // namespace zuma

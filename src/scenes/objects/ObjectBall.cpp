@@ -44,7 +44,7 @@ void ObjectBall::updateGraphics()
     getProperty(ColorProperty::key).and_then(ColorProperty::cast).map(onSetColor);
 }
 
-bool ObjectBall::hasColission(const ObjectBall *ball) const
+bool ObjectBall::hasCollision(const ObjectBall *ball) const
 {
     const auto thisPosition = this->getProperty(PositionProperty::key).and_then(PositionProperty::cast);
     const auto position = ball->getProperty(PositionProperty::key).and_then(PositionProperty::cast);

@@ -166,6 +166,15 @@ namespace utils
         };
 }   // namespace utils
 
+namespace gameplay
+{
+
+static constexpr float cBaseCircleVelocity = 0.2f;
+static constexpr float cBaseAccelCircleVelocity = 1.0f;
+static constexpr float cBaseReversCircleVelocity = -5.0f;
+
+}   // namespace gameplay
+
 }   // namespace config
 
 }   // namespace zuma

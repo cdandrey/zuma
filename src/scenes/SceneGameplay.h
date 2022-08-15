@@ -28,21 +28,35 @@ public:
     void draw(sf::RenderWindow *window);
 
 private:
+    
+    using itBall = std::list<ObjectBall>::iterator;
+
     sf::Vector2u m_size;
-    ObjectBall m_fakeBallOnStartPosition;
     ObjectGun m_gun;
-    std::list<ObjectBall> m_balls;
     ObjectBall m_shotBall;
+    std::list<ObjectBall> m_balls;
+    ObjectBall m_fakeBallOnStartPosition;
 
     sf::Clock m_clock;
     sf::Time m_elapsedTime;
 
     RandomizeColor m_randColor;
 
+    enum class StateColision {
+        Inserting,
+        Erasing,
+        Undefine
+    };
+
     void calculatNextScene();
     void spawnBalls();
     void gunLoad();
     void shotBallOut();
+    auto checkInsertingBall(itBall itColisionBall,const ObjectBall &colisionBall);
+    auto checkCollisionBall();
+
+    void setBallsProperty(itBall begin, itBall end, PropertyKey key, PropertyValue value);
+    void shotBallFree();
 };
 
 }   // namespace zuma

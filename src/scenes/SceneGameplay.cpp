@@ -20,9 +20,9 @@ namespace zuma
 
 SceneGameplay::SceneGameplay(sf::Vector2u windowSize)
     : m_size{windowSize}
-    , m_fakeBallOnStartPosition{m_size,sf::Color::White}
     , m_gun{m_size}
     , m_shotBall{{},sf::Color::White}
+    , m_fakeBallOnStartPosition{m_size,{}}
 {
 }
 
@@ -38,7 +38,6 @@ void SceneGameplay::update()
     }
 
     for (auto &ball : m_balls) {
-        ball.setProperty(CircleVelocityProperty::key,0.2f);
         const auto adapter = std::make_shared<AdapterMovable>(&ball);
         const auto cmd = std::make_shared<CommandCircleMovable>(adapter);
         cmd->execute(m_elapsedTime.asSeconds());
@@ -98,20 +97,74 @@ void SceneGameplay::gunShot(sf::Vector2f position)
 
 bool SceneGameplay::gameOver() const
 {
-    return (m_balls.size() > 1) && m_fakeBallOnStartPosition.hasColission(&m_balls.front());
+    return (m_balls.size() > 1) && m_fakeBallOnStartPosition.hasCollision(&m_balls.front());
+}
+
+void SceneGameplay::setBallsProperty(itBall begin, itBall end, PropertyKey key, PropertyValue value)
+{
+    for (auto it = begin; it != end; ++it) {
+        it->setProperty(key,value);
+    }
+}
+
+auto SceneGameplay::checkCollisionBall()
+{
+    for (auto it = m_balls.begin(); it != m_balls.end(); ++it) {
+        if (m_shotBall.hasCollision(&(*it))) {
+            m_shotBall.setProperty(VelocityProperty::key,0.0f);
+            setBallsProperty(m_balls.begin(),std::next(it,1),CircleVelocityProperty::key,config::gameplay::cBaseAccelCircleVelocity);
+            setBallsProperty(std::next(it,1),m_balls.end(),CircleVelocityProperty::key,0.0f);
+            return std::tuple{it,*it,StateColision::Inserting};
+        }
+    }
+
+    return std::tuple{m_balls.begin(),ObjectBall{m_size,{}},StateColision::Undefine};
+}
+
+auto SceneGameplay::checkInsertingBall(itBall itColisionBall,const ObjectBall &colisionBall)
+{
+    if (!colisionBall.hasCollision(&(*itColisionBall))) {
+        auto itInsert = m_balls.insert(itColisionBall,colisionBall);
+        const auto colorInsert = m_shotBall.getProperty(ColorProperty::key).and_then(ColorProperty::cast);
+        itInsert->setProperty(ColorProperty::key,colorInsert.value());
+        setBallsProperty(m_balls.begin(),m_balls.end(),CircleVelocityProperty::key,config::gameplay::cBaseCircleVelocity);
+        shotBallFree();
+        return StateColision::Undefine;
+    }
+    
+    return StateColision::Inserting;
 }
 
 void SceneGameplay::calculatNextScene() 
 {
-    spawnBalls();
-    gunLoad();
-    shotBallOut();
+    static itBall itColisionBall = m_balls.begin();
+    static ObjectBall colisionBall {m_size,{}};
+    static StateColision stateCollision {StateColision::Undefine};
+
+    switch (stateCollision)
+    {
+    case StateColision::Inserting:
+        stateCollision = checkInsertingBall(itColisionBall,colisionBall);
+        break;
+    case StateColision::Erasing:
+        break;
+    case StateColision::Undefine:
+        spawnBalls();
+        gunLoad();
+        shotBallOut();
+        std::tie(itColisionBall, colisionBall,stateCollision) = checkCollisionBall();
+        break;
+    default:
+        break;
+    }
+
 }
 
 void SceneGameplay::spawnBalls()
 {
-    if (m_balls.empty() || !m_fakeBallOnStartPosition.hasColission(&m_balls.back())) {
+    if (m_balls.empty() || !m_fakeBallOnStartPosition.hasCollision(&m_balls.back())) {
         m_balls.emplace_back(m_size,m_randColor.getRandomColor());
+        m_balls.back().setProperty(CircleVelocityProperty::key,config::gameplay::cBaseCircleVelocity);
     }
 }
 
@@ -137,11 +190,7 @@ void SceneGameplay::shotBallOut()
             const auto onGetPosition = [this,velocity] (float radius) {
                 const auto onOut = [this, velocity, radius] (sf::Vector2f position) {
                     if (position.x >= m_size.x - radius || position.y >= m_size.y - radius || position.x <= radius || position.y <= radius) {
-                        m_shotBall.setProperty(PositionProperty::key, sf::Vector2f{0.0f,0.0f});
-                        m_shotBall.setProperty(RadiusProperty::key,0.0f);
-                        m_shotBall.setProperty(DirectionProperty::key,0.0f);
-                        m_shotBall.setProperty(VelocityProperty::key,0.0f);
-                        m_shotBall.setProperty(ColorProperty::key,sf::Color::White);
+                        shotBallFree();
                     }
                 };
                 m_shotBall.getProperty(PositionProperty::key).and_then(PositionProperty::cast).map(onOut);
@@ -151,6 +200,15 @@ void SceneGameplay::shotBallOut()
     };
 
     m_shotBall.getProperty(VelocityProperty::key).and_then(VelocityProperty::cast).map(onGetRadius);
+}
+
+void SceneGameplay::shotBallFree()
+{
+    m_shotBall.setProperty(PositionProperty::key, sf::Vector2f{0.0f,0.0f});
+    m_shotBall.setProperty(RadiusProperty::key,0.0f);
+    m_shotBall.setProperty(DirectionProperty::key,0.0f);
+    m_shotBall.setProperty(VelocityProperty::key,0.0f);
+    m_shotBall.setProperty(ColorProperty::key,sf::Color::White);
 }
 
 }   // namespace zuma

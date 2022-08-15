@@ -36,9 +36,6 @@ private:
     ObjectBall m_shotBall;
     std::list<ObjectBall> m_balls;
 
-    sf::Clock m_clock;
-    sf::Time m_elapsedTime;
-
     RandomizeColor m_randColor;
 
     enum class Mode {

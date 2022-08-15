@@ -28,26 +28,29 @@ SceneGameplay::SceneGameplay(sf::Vector2u windowSize)
 
 void SceneGameplay::update()
 {
-    m_elapsedTime = m_clock.restart();
+    static sf::Clock clock;
+    static sf::Time elapsedTime;
+    
+    elapsedTime = clock.restart();
 
     {
         auto adapter = std::make_shared<AdapterRotable>(&m_gun);
         auto cmd = std::make_shared<CommandRotable>(adapter);
-        cmd->execute(m_elapsedTime.asSeconds());
+        cmd->execute(elapsedTime.asSeconds());
         m_gun.updateGraphics();
     }
 
     for (auto &ball : m_balls) {
         const auto adapter = std::make_shared<AdapterMovable>(&ball);
         const auto cmd = std::make_shared<CommandCircleMovable>(adapter);
-        cmd->execute(m_elapsedTime.asSeconds());
+        cmd->execute(elapsedTime.asSeconds());
         ball.updateGraphics();
     }
 
     {
         auto adapter = std::make_shared<AdapterMovable>(&m_shotBall);
         auto cmd = std::make_shared<CommandMovable>(adapter);
-        cmd->execute(m_elapsedTime.asSeconds());
+        cmd->execute(elapsedTime.asSeconds());
         m_shotBall.updateGraphics();
     }
 }

@@ -174,41 +174,42 @@ auto SceneGameplay::insertion(IteratorBall itCollisionBall,const ObjectBall &cop
 
 auto SceneGameplay::searchIdentic(IteratorBall itInsertBall)
 {
-    IteratorBall it = itInsertBall;
     const auto onColor = [](IteratorBall it) -> sf::Color {
         return it->getProperty(ColorProperty::key).and_then(ColorProperty::cast).value();
     };
 
     const auto colorInsert = onColor(itInsertBall);
 
+    IteratorBall itIdentFirst = itInsertBall;
     IteratorBall itIdentLast = itInsertBall;
+
+    IteratorBall it = itInsertBall;
     while (++it != m_balls.end() && onColor(it) == colorInsert) {
         itIdentLast = it;
+    }
+
+    it = itInsertBall;
+    while (it-- != m_balls.begin() && onColor(it) == colorInsert) {
+        itIdentFirst = it;
+    }
+    
+    if (it == m_balls.begin() && onColor(it) == colorInsert) {
+        itIdentFirst = it;
+    }
+
+    if (itIdentFirst == itIdentLast) {
+        return std::tuple{itIdentFirst,itIdentLast,Mode::Start};
     }
 
     if (itIdentLast != itInsertBall && itIdentLast != m_balls.end()){
         ++itIdentLast;
     }
     
-    it = itInsertBall;
-    IteratorBall itIdentFirts = itInsertBall;
-    while (it-- != m_balls.begin() && onColor(it) == colorInsert) {
-        itIdentFirts = it;
-    }
-
-    if (it == m_balls.begin() && onColor(it) == colorInsert) {
-        itIdentFirts = it;
-    }
-
-    if (itIdentFirts == itIdentLast) {
-        return std::tuple{itIdentFirts,itIdentLast,Mode::Start};
-    }
-
-    for (it = itIdentFirts; it != itIdentLast; ++it) {
+    for (it = itIdentFirst; it != itIdentLast; ++it) {
         ballFree(*it);
     }
 
-    return std::tuple{itIdentFirts,itIdentLast,Mode::EraseIdentic};
+    return std::tuple{itIdentFirst,itIdentLast,Mode::EraseIdentic};
 }
 
 auto SceneGameplay::eraseIdentic(IteratorBall first, IteratorBall last)

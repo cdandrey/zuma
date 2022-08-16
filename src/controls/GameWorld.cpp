@@ -26,11 +26,13 @@ GameWorld::~GameWorld()
 
 void GameWorld::create() 
 {
-    m_windowUPtr = std::make_unique<sf::RenderWindow>(sf::VideoMode{1920,1080},"Zuma");
+    const auto mode = sf::VideoMode::getDesktopMode();
+    const auto windowSize = sf::Vector2u{mode.width,mode.height};
+    m_windowUPtr = std::make_unique<sf::RenderWindow>(mode,"Zuma");
     m_gameStateUPtr = std::make_unique<GameState>();
-    m_sceneMainMenuUptr = std::make_unique<SceneMainMenu>(sf::Vector2u{1920,1080});
-    m_sceneGameplayUptr = std::make_unique<SceneGameplay>(sf::Vector2u{1920,1080});
-    m_sceneScoreUptr = std::make_unique<SceneScore>(sf::Vector2u{1920,1080});
+    m_sceneMainMenuUptr = std::make_unique<SceneMainMenu>(windowSize);
+    m_sceneGameplayUptr = std::make_unique<SceneGameplay>(windowSize);
+    m_sceneScoreUptr = std::make_unique<SceneScore>(windowSize);
 }
 
 void GameWorld::destroy()

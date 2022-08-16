@@ -30,23 +30,23 @@ SceneScore::SceneScore(sf::Vector2u windowSize)
     m_shotsTitle.setString("Count shots: ");
     configText(&m_shotsTitle);
 
-    m_shotsValue.setPosition(position(windowSize,text::shiftLeft(windowSize,m_shotsTitle.getPosition())));
+    m_shotsValue.setPosition(text::shiftLeft(windowSize,m_shotsTitle.getPosition()).x, m_shotsTitle.getPosition().y);
     m_shotsValue.setString("0");
     configText(&m_shotsValue);
 
-    m_destroedTitle.setPosition(position(windowSize,text::shiftDown(windowSize,m_shotsTitle.getPosition())));
+    m_destroedTitle.setPosition(m_shotsTitle.getPosition().x, text::shiftDown(windowSize,m_shotsTitle.getPosition()).y);
     m_destroedTitle.setString("Balls destroyed: ");
     configText(&m_destroedTitle);
 
-    m_destroedValue.setPosition(position(windowSize,text::shiftLeft(windowSize,m_destroedTitle.getPosition())));
+    m_destroedValue.setPosition(text::shiftLeft(windowSize,m_destroedTitle.getPosition()).x, m_destroedTitle.getPosition().y);
     m_destroedValue.setString("0");
     configText(&m_destroedValue);
 
-    m_efficiencyTitle.setPosition(position(windowSize,text::shiftDown(windowSize,m_destroedTitle.getPosition())));
+    m_efficiencyTitle.setPosition(m_shotsTitle.getPosition().x,text::shiftDown(windowSize,m_destroedTitle.getPosition()).y);
     m_efficiencyTitle.setString("Shot efficiency: ");
     configText(&m_efficiencyTitle);
 
-    m_efficiencyValue.setPosition(position(windowSize,text::shiftLeft(windowSize,m_efficiencyTitle.getPosition())));
+    m_efficiencyValue.setPosition(text::shiftLeft(windowSize,m_efficiencyTitle.getPosition()).x, m_efficiencyTitle.getPosition().y);
     m_efficiencyValue.setString("0");
     configText(&m_efficiencyValue);
 }

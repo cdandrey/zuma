@@ -86,7 +86,8 @@ bool SceneGameplay::gameOver() const
 
 config::gamestate::DataScore SceneGameplay::getDataScore()
 {
-    m_dataScore.efficiency = static_cast<float>(m_dataScore.destroed) / static_cast<float>(m_dataScore.shots);
+    m_dataScore.efficiency = m_dataScore.shots != 0 ? static_cast<float>(m_dataScore.destroed) / static_cast<float>(m_dataScore.shots)
+                                                    : 0.0f;
     return m_dataScore;
 }
 

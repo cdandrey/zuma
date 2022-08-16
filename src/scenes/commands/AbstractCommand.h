@@ -17,6 +17,7 @@ public:
 	AbstractCommand() = default;
 	virtual ~AbstractCommand() = default;
 
+	// TO DO: moved parameter to constructor with variadical template
 	virtual Result<void> execute(float elapsedTime) = 0;
 };
 

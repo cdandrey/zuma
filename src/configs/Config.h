@@ -8,6 +8,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <cmath>
 
 namespace zuma
 {
@@ -73,6 +74,18 @@ namespace score
 {
     static const float cPadding = 10.0f;
     
+    static sf::Vector2f size(sf::Vector2u windowSize,sf::Vector2f baseSize) 
+    {
+        const auto scale = scaleFactor(windowSize);
+        return {scale.x * baseSize.x, scale.y * baseSize.y};
+    }
+
+    static sf::Vector2f position(sf::Vector2u windowSize,sf::Vector2f basePosition) 
+    {
+        const auto scale = scaleFactor(windowSize);
+        return {scale.x * basePosition.x, scale.y * basePosition.y};
+    }
+
     namespace box
     {
         static const sf::Vector2f cBaseSize        = {600.0f,400.0f};
@@ -81,18 +94,6 @@ namespace score
         static const sf::Color    cFillColor       = sf::Color::White;
         static const sf::Color    cBorderColor     = sf::Color::Black;
         static const float        cBorderThickness = 2.0f;
-    
-        static sf::Vector2f size(sf::Vector2u windowSize) 
-        {
-            const auto scale = scaleFactor(windowSize);
-            return {scale.x * cBaseSize.x, scale.y * cBaseSize.y};
-        }
-
-        static sf::Vector2f position(sf::Vector2u windowSize) 
-        {
-            const auto scale = scaleFactor(windowSize);
-            return {scale.x * cBasePosition.x, scale.y * cBasePosition.y};
-        }
 
     }   // namespace score::box
 
@@ -102,18 +103,25 @@ namespace score
         static const sf::Vector2f cBasePosition = {box::cBasePosition.x,
                                                    box::cBasePosition.y + box::cBaseSize.y / 2.0f + cBaseSize.y / 2.0f + cPadding};
     
-        static sf::Vector2f size(sf::Vector2u windowSize) 
+    }   // namespace score::button
+
+    namespace text
+    {
+        static const sf::Vector2f cBaseSize = {box::cBaseSize.x / 2.0f, 50.0f};
+        static const sf::Vector2f cBasePosition = {box::cBasePosition.x - box::cBaseSize.x / 2.0f + 2.0f * cPadding,
+                                                   box::cBasePosition.y - box::cBaseSize.y / 2.0f + cBaseSize.y / 2.0f + cPadding};
+
+        static const sf::Vector2f shiftLeft (sf::Vector2u windowSize, sf::Vector2f position) 
         {
-            const auto scale = scaleFactor(windowSize);
-            return {scale.x * cBaseSize.x, scale.y * cBaseSize.y};
+            return {position.x + scaleFactor(windowSize).x * (box::cBaseSize.x / 2.0f), position.y};
         }
 
-        static sf::Vector2f position(sf::Vector2u windowSize) 
+        static const sf::Vector2f shiftDown (sf::Vector2u windowSize, sf::Vector2f position) 
         {
-            const auto scale = scaleFactor(windowSize);
-            return {scale.x * cBasePosition.x, scale.y * cBasePosition.y};
+            return {position.x, position.y + scaleFactor(windowSize).y * (cBaseSize.y + cPadding)};
         }
-    }   // namespace score::button
+
+    }   // namespace score::text
 
 }   // namespace score
 
@@ -170,11 +178,21 @@ namespace gameplay
 {
 
 static constexpr float cBaseCircleVelocity = 0.1f;
-static constexpr float cBaseAccelCircleVelocity = 5.0f;
-static constexpr float cBaseReversCircleVelocity = -5.0f;
+static constexpr float cBaseAccelCircleVelocity = 1.0f;
+static constexpr float cBaseReversCircleVelocity = -1.0f;
 static constexpr float cBaseShotVelocity = 1000.0f;
 
 }   // namespace gameplay
+
+namespace gamestate
+{
+using DataScore = struct {
+                    unsigned shots;
+                    unsigned destroed;
+                    float efficiency;
+                };
+
+}   // namespace gamestate
 
 }   // namespace config
 

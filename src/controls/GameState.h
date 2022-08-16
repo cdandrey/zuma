@@ -8,6 +8,7 @@
 #pragma once
 
 #include "../scenes/handlers/AbstractHandlerScene.h"
+#include "../configs/Config.h"
 
 namespace zuma
 {
@@ -27,11 +28,14 @@ public:
 
     void changed(State state);
     bool isChanged() const;
+    void setScore(const config::gamestate::DataScore& data);
+    config::gamestate::DataScore getScore() const;
     AbstractHandlerSceneUPtr getHandlerOfState();
 
 private:
     State m_state;
     State m_handlerOfState;
+    config::gamestate::DataScore m_data;
 };
 
 }

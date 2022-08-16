@@ -16,15 +16,15 @@ namespace zuma
 
 GameWorld::GameWorld()
 {
-    Create();
+    create();
 }
 
 GameWorld::~GameWorld()
 {
-    Destroy();
+    destroy();
 }
 
-void GameWorld::Create() 
+void GameWorld::create() 
 {
     m_windowUPtr = std::make_unique<sf::RenderWindow>(sf::VideoMode{1920,1080},"Zuma");
     m_gameStateUPtr = std::make_unique<GameState>();
@@ -33,7 +33,7 @@ void GameWorld::Create()
     m_sceneScoreUptr = std::make_unique<SceneScore>(sf::Vector2u{1920,1080});
 }
 
-void GameWorld::Destroy()
+void GameWorld::destroy()
 {
     m_windowUPtr->close();
 }
@@ -43,26 +43,24 @@ bool GameWorld::isOpen() const
     return m_windowUPtr->isOpen();
 }
 
-void GameWorld::Input()
+void GameWorld::input()
 {
     sf::Event event;
     while (m_windowUPtr->pollEvent(event))
     {
-        if (event.type == sf::Event::Closed ||
-            event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape ||
-            event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right)
+        if (event.type == sf::Event::Closed)
         {
-            Destroy();
+            destroy();
         }
     }
 }
 
-void GameWorld::Update()
+void GameWorld::update()
 {
     m_windowUPtr->clear(sf::Color::White);
 }
 
-void GameWorld::Render() 
+void GameWorld::render() 
 {
     m_windowUPtr->display();
 }

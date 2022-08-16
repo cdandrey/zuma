@@ -19,9 +19,9 @@ void Engine::exec()
 
     while (handler->isOpen(scene.get()))
     {
-        handler->Input(scene.get());
-        handler->Update(scene.get());
-        handler->Render(scene.get());
+        handler->input(scene.get());
+        handler->update(scene.get());
+        handler->render(scene.get());
 
         if (scene->getGameState()->isChanged()) {
             handler = scene->getGameState()->getHandlerOfState();

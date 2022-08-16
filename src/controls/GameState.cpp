@@ -29,11 +29,14 @@ AbstractHandlerSceneUPtr GameState::getHandlerOfState()
     case State::Pause: 
         return std::make_unique<HandlerSceneMenu>(); 
     case State::Play:
-
         return std::make_unique<HandlerSceneGameplay>(); 
     case State::Score:
         return std::make_unique<HandlerSceneScore>(); 
+    default:
+        // TO DO: logging and hadling error
+        return {};
     }
+
 }
 
 void GameState::changed(State state)
@@ -44,6 +47,16 @@ void GameState::changed(State state)
 bool GameState::isChanged() const
 {
     return m_state != m_handlerOfState;
+}
+
+void GameState::setScore(const config::gamestate::DataScore& data)
+{
+    m_data = data;
+}
+
+config::gamestate::DataScore GameState::getScore() const
+{
+    return m_data;
 }
 
 }

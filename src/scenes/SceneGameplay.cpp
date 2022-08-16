@@ -11,9 +11,6 @@
 #include "commands/CommandRotable.h"
 #include "commands/CommandCircleMovable.h"
 #include "commands/CommandMovable.h"
-#include "../configs/Config.h"
-
-#include <iostream>
 
 namespace zuma
 {
@@ -21,9 +18,24 @@ namespace zuma
 SceneGameplay::SceneGameplay(sf::Vector2u windowSize)
     : m_size{windowSize}
     , m_gun{m_size}
-    , m_shotBall{{},sf::Color::Transparent}
-    , m_balls{{m_size,sf::Color::Transparent}}  // set fake first ball for correct reverse itaration
+    , m_shotBall{{},{}}
+    , m_mode{Mode::OutGame}
 {
+}
+
+void SceneGameplay::gameStart()
+{
+    m_mode = Mode::Start;
+    m_balls.emplace_back(m_size,sf::Color::Transparent);  // push fake first ball for correct reverse itaration
+    m_dataScore = {};
+}
+
+void SceneGameplay::gameStop()
+{
+    m_mode = Mode::OutGame;
+    m_gun.setProperty(ColorProperty::key,sf::Color::White); // reload gun
+    m_balls.clear();
+    ballFree(&m_shotBall);
 }
 
 void SceneGameplay::update()
@@ -66,6 +78,18 @@ void SceneGameplay::draw(sf::RenderWindow *window)
     calculatNextScene();
 }
 
+bool SceneGameplay::gameOver() const
+{
+    // taked next iteartor after begin, because first ball is fake
+    return (m_balls.size() > 3) && m_balls.back().hasCollision(&(*std::next(m_balls.begin(),1)));
+}
+
+config::gamestate::DataScore SceneGameplay::getDataScore()
+{
+    m_dataScore.efficiency = static_cast<float>(m_dataScore.destroed) / static_cast<float>(m_dataScore.shots);
+    return m_dataScore;
+}
+
 void SceneGameplay::gunRotate(sf::Vector2f position)
 {
     m_gun.setProperty(RotatePositionProperty::key,position);
@@ -92,22 +116,11 @@ void SceneGameplay::gunShot(sf::Vector2f position)
             const auto posY = gunPosition.value().y + std::sinf(a) * gunSizeR;
 
             m_shotBall.setProperty(PositionProperty::key, sf::Vector2f{posX, posY});
+            m_dataScore.shots++;
         }
     };
 
     m_gun.getProperty(ColorProperty::key).and_then(ColorProperty::cast).map(onShot);
-}
-
-bool SceneGameplay::gameOver() const
-{
-    return (m_balls.size() > 3) && m_balls.back().hasCollision(&(*std::next(m_balls.begin(),1)));  // next because first ball is fake
-}
-
-void SceneGameplay::setBallsProperty(IteratorBall first, IteratorBall last, PropertyKey key, PropertyValue value)
-{
-    for (auto it = first; it != last; ++it) {
-        it->setProperty(key,value);
-    }
 }
 
 auto SceneGameplay::start()
@@ -170,17 +183,17 @@ auto SceneGameplay::stopExpansion(IteratorBall itPrevCollisionBall,sf::Vector2f 
     return Mode::StopExpansion;
 }
 
-auto SceneGameplay::insertion(IteratorBall itCollisionBall, sf::Vector2f position)
+auto SceneGameplay::insertion(IteratorBall first, sf::Vector2f position)
 {
     const auto onColor = [] (const ObjectBall &ball) -> sf::Color {
         return ball.getProperty(ColorProperty::key).and_then(ColorProperty::cast).value();
     };
     
-    // insert equal prev itCollisionBall
-    auto insert = m_balls.emplace(itCollisionBall,m_size,onColor(m_shotBall));
+    // insert equal prev first
+    auto insert = m_balls.emplace(first,m_size,onColor(m_shotBall));
     insert->setProperty(PositionProperty::key,position);
 
-    ballFree(m_shotBall);
+    ballFree(&m_shotBall);
     
     return std::tuple{insert, Mode::SearchIdentic};
 }
@@ -219,7 +232,7 @@ auto SceneGameplay::searchIdentic(IteratorBall insert)
     }
     
     for (it = first; it != last; ++it) {
-        ballFree(*it);
+        ballFree(&(*it));
     }
 
     return std::tuple{first,last,Mode::EraseIdentic};
@@ -227,6 +240,7 @@ auto SceneGameplay::searchIdentic(IteratorBall insert)
 
 auto SceneGameplay::eraseIdentic(IteratorBall first, IteratorBall last)
 {
+    m_dataScore.destroed += static_cast<unsigned>(std::distance(first,last)); 
     last = m_balls.erase(first,last);
     return std::tuple(last, Mode::StartComprasion);
 }
@@ -256,46 +270,44 @@ auto SceneGameplay::stopComprasion(IteratorBall last, sf::Vector2f position)
 
 void SceneGameplay::calculatNextScene() 
 {
-    static IteratorBall itCollisionBall;
     static IteratorBall first;
     static IteratorBall last;
     static sf::Vector2f position;
-    static Mode mode {Mode::Start};
 
-    switch (mode)
+    switch (m_mode)
     {
     case Mode::Start:
         gunLoad();
-        mode = start();
+        m_mode = start();
         break;
     case Mode::WaitShot:
         spawnBalls();
-        mode = waitShot();
+        m_mode = waitShot();
         break;
     case Mode::CheckCollision:
         spawnBalls();
-        std::tie(itCollisionBall,position,mode) = checkCollision();
+        std::tie(first,position,m_mode) = checkCollision();
         break;
     case Mode::StartExpansion:
-        mode = startExpansion(m_balls.begin(),itCollisionBall);
+        m_mode = startExpansion(m_balls.begin(),first);
         break;
     case Mode::StopExpansion:
-        mode = stopExpansion(std::prev(itCollisionBall,1),position);
+        m_mode = stopExpansion(std::prev(first,1),position);
         break;
     case Mode::Insertion:
-        std::tie(itCollisionBall,mode) = insertion(itCollisionBall,position);
+        std::tie(first,m_mode) = insertion(first,position);
         break;
     case Mode::SearchIdentic:
-        std::tie(first,last,mode) = searchIdentic(itCollisionBall);
+        std::tie(first,last,m_mode) = searchIdentic(first);
         break;
     case Mode::EraseIdentic:
-        std::tie(last, mode) = eraseIdentic(first,last);
+        std::tie(last, m_mode) = eraseIdentic(first,last);
         break;
     case Mode::StartComprasion:
-        std::tie(last, position, mode) = startComprasion(last);
+        std::tie(last, position, m_mode) = startComprasion(last);
         break;
     case Mode::StopComprasion:
-        mode = stopComprasion(last, position);
+        m_mode = stopComprasion(last, position);
         break;
     default:
         break;
@@ -323,7 +335,7 @@ bool SceneGameplay::shotBallOut()
     const auto onGetPosition = [this] (float radius) -> Result<bool> {
         const auto onOut = [this, radius] (sf::Vector2f position) -> Result<bool> {
             if (position.x >= m_size.x - radius || position.y >= m_size.y - radius || position.x <= radius || position.y <= radius) {
-                ballFree(m_shotBall);
+                ballFree(&m_shotBall);
                 return true;
             }
             return false;
@@ -333,14 +345,21 @@ bool SceneGameplay::shotBallOut()
     return m_shotBall.getProperty(RadiusProperty::key).and_then(RadiusProperty::cast).and_then(onGetPosition).value();
 }
 
-void SceneGameplay::ballFree(ObjectBall &ball)
+void SceneGameplay::setBallsProperty(IteratorBall first, IteratorBall last, PropertyKey key, PropertyValue value)
 {
-    ball.setProperty(PositionProperty::key, sf::Vector2f{0.0f,0.0f});
-    ball.setProperty(RadiusProperty::key,0.0f);
-    ball.setProperty(DirectionProperty::key,0.0f);
-    ball.setProperty(VelocityProperty::key,0.0f);
-    ball.setProperty(ColorProperty::key,sf::Color::White);
-    ball.setProperty(CircleVelocityProperty::key,0.0f);
+    for (auto it = first; it != last; ++it) {
+        it->setProperty(key,value);
+    }
+}
+
+void SceneGameplay::ballFree(ObjectBall *ball)
+{
+    ball->setProperty(PositionProperty::key, sf::Vector2f{0.0f,0.0f});
+    ball->setProperty(RadiusProperty::key,0.0f);
+    ball->setProperty(DirectionProperty::key,0.0f);
+    ball->setProperty(VelocityProperty::key,0.0f);
+    ball->setProperty(ColorProperty::key,sf::Color::White);
+    ball->setProperty(CircleVelocityProperty::key,0.0f);
 }
 
 }   // namespace zuma

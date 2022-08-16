@@ -16,7 +16,7 @@ bool HandlerSceneGameplay::isOpen(GameWorld *scene) const
     return scene->isOpen();
 }
 
-void HandlerSceneGameplay::Input(GameWorld *scene) 
+void HandlerSceneGameplay::input(GameWorld *scene) 
 {
     sf::Event event;
     while (scene->getWindow()->pollEvent(event)) {
@@ -27,7 +27,9 @@ void HandlerSceneGameplay::Input(GameWorld *scene)
             scene->getGameState()->changed(GameState::State::Menu);
         }
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+            scene->getSceneGameplay()->gameStop();
             scene->getGameState()->changed(GameState::State::Score);
+            scene->getGameState()->setScore(scene->getSceneGameplay()->getDataScore());
         }
         if (event.type == sf::Event::MouseMoved) {
             const auto mousePos = sf::Mouse::getPosition(*scene->getWindow());
@@ -41,19 +43,21 @@ void HandlerSceneGameplay::Input(GameWorld *scene)
 
 }
 
-void HandlerSceneGameplay::Update(GameWorld *scene)
+void HandlerSceneGameplay::update(GameWorld *scene)
 {
-    scene->Update();
+    scene->update();
     scene->getSceneGameplay()->update();
     scene->getSceneGameplay()->draw(scene->getWindow());
     if (scene->getSceneGameplay()->gameOver()) {
         scene->getGameState()->changed(GameState::State::Score);
+        scene->getSceneGameplay()->gameStop();
+        scene->getGameState()->setScore(scene->getSceneGameplay()->getDataScore());
     }
 }
 
-void HandlerSceneGameplay::Render(GameWorld *scene)
+void HandlerSceneGameplay::render(GameWorld *scene)
 {
-    scene->Render();
+    scene->render();
 }
 
 }

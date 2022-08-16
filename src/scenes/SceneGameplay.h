@@ -10,6 +10,7 @@
 #include "objects/ObjectGun.h"
 #include "objects/ObjectBall.h"
 #include "../utils/Randomizer.h"
+#include "../configs/Config.h"
 
 namespace zuma
 {
@@ -22,6 +23,10 @@ public:
     ~SceneGameplay() = default;
     
     bool gameOver() const;
+    void gameStart();
+    void gameStop();
+
+    config::gamestate::DataScore getDataScore();
     void gunRotate(sf::Vector2f position);
     void gunShot(sf::Vector2f position);
     void update();
@@ -36,6 +41,8 @@ private:
     ObjectBall m_shotBall;
     std::list<ObjectBall> m_balls;
 
+    config::gamestate::DataScore m_dataScore;
+
     RandomizeColor m_randColor;
 
     enum class Mode {
@@ -48,8 +55,16 @@ private:
         SearchIdentic,
         EraseIdentic,
         StartComprasion,
-        StopComprasion
+        StopComprasion,
+        OutGame
     };
+    
+    Mode m_mode;
+
+    void calculatNextScene();
+    void spawnBalls();
+    void gunLoad();
+    bool shotBallOut();
 
     auto start();
     auto waitShot();
@@ -62,13 +77,8 @@ private:
     auto startComprasion(IteratorBall last);
     auto stopComprasion(IteratorBall last, sf::Vector2f position);
 
-    void calculatNextScene();
-    void spawnBalls();
-    void gunLoad();
-    bool shotBallOut();
-
     void setBallsProperty(IteratorBall first, IteratorBall last, PropertyKey key, PropertyValue value);
-    void ballFree(ObjectBall &ball);
+    void ballFree(ObjectBall *ball);
 };
 
 }   // namespace zuma

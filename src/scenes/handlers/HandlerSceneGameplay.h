@@ -18,9 +18,9 @@ public:
     ~HandlerSceneGameplay() = default;
 
     bool isOpen(GameWorld *scene) const override;
-    void Input(GameWorld *scene) override;
-    void Update(GameWorld *scene) override;
-    void Render(GameWorld *scene) override;
+    void input(GameWorld *scene) override;
+    void update(GameWorld *scene) override;
+    void render(GameWorld *scene) override;
 };
 
 }

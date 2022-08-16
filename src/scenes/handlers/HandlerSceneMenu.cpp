@@ -18,7 +18,7 @@ bool HandlerSceneMenu::isOpen(GameWorld *scene) const
     return scene->isOpen();
 }
 
-void HandlerSceneMenu::Input(GameWorld *scene) 
+void HandlerSceneMenu::input(GameWorld *scene) 
 {
     sf::Event event;
     while (scene->getWindow()->pollEvent(event)) {
@@ -33,32 +33,34 @@ void HandlerSceneMenu::Input(GameWorld *scene)
 
         if (event.type == sf::Event::MouseMoved) {
             const auto mousePos = sf::Mouse::getPosition(*scene->getWindow());
-            scene->getSceneMainMenu()->ButtonPlayMouseHover(mousePos);
-            scene->getSceneMainMenu()->ButtonExitMouseHover(mousePos);
+            scene->getSceneMainMenu()->buttonPlayMouseHover(mousePos);
+            scene->getSceneMainMenu()->buttonExitMouseHover(mousePos);
         }
 
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
-            if (scene->getSceneMainMenu()->ButtonPlayMouseClick({event.mouseButton.x,event.mouseButton.y})) {
+            if (scene->getSceneMainMenu()->buttonPlayMouseClick({event.mouseButton.x,event.mouseButton.y})) {
                 scene->getGameState()->changed(GameState::State::Play);
+                scene->getSceneGameplay()->gameStart();
+                scene->getGameState()->setScore(scene->getSceneGameplay()->getDataScore());
             }
 
-            if (scene->getSceneMainMenu()->ButtonExitMouseClick({event.mouseButton.x,event.mouseButton.y})) {
+            if (scene->getSceneMainMenu()->buttonExitMouseClick({event.mouseButton.x,event.mouseButton.y})) {
                 scene->getWindow()->close();
             }
         }
     } 
 }
 
-void HandlerSceneMenu::Update(GameWorld *scene)
+void HandlerSceneMenu::update(GameWorld *scene)
 {
-    scene->Update();
-    scene->getSceneMainMenu()->Draw(scene->getWindow());
+    scene->update();
+    scene->getSceneMainMenu()->draw(scene->getWindow());
 }
 
-void HandlerSceneMenu::Render(GameWorld *scene)
+void HandlerSceneMenu::render(GameWorld *scene)
 {
-    scene->Render();
+    scene->render();
 }
 
 }

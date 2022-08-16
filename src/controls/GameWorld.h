@@ -29,9 +29,9 @@ public:
     ~GameWorld();
 
     bool isOpen() const;
-    void Input();
-    void Update();
-    void Render();
+    void input();
+    void update();
+    void render();
 
     sf::RenderWindow* getWindow() const;
     GameState* getGameState() const;
@@ -46,8 +46,8 @@ private:
     std::unique_ptr<SceneGameplay> m_sceneGameplayUptr;
     std::unique_ptr<SceneScore> m_sceneScoreUptr;
 
-    void Create();
-    void Destroy();
+    void create();
+    void destroy();
 };
 
 }

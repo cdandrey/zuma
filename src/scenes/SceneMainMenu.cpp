@@ -17,23 +17,23 @@ SceneMainMenu::SceneMainMenu(sf::Vector2u windowSize)
 {
 }
 
-void SceneMainMenu::Draw(sf::RenderWindow *window) const
+void SceneMainMenu::draw(sf::RenderWindow *window) const
 {
     m_buttonPlay.Draw(window);
     m_buttonExit.Draw(window);
 }
 
-bool SceneMainMenu::ButtonPlayMouseClick(sf::Vector2i mousePos)
+bool SceneMainMenu::buttonPlayMouseClick(sf::Vector2i mousePos)
 {
     return m_buttonPlay.isHover(mousePos);
 }
 
-bool SceneMainMenu::ButtonExitMouseClick(sf::Vector2i mousePos)
+bool SceneMainMenu::buttonExitMouseClick(sf::Vector2i mousePos)
 {
     return m_buttonExit.isHover(mousePos);
 }
 
-void SceneMainMenu::ButtonPlayMouseHover(sf::Vector2i mousePos)
+void SceneMainMenu::buttonPlayMouseHover(sf::Vector2i mousePos)
 {
     m_buttonPlay.unhovered();
 
@@ -42,7 +42,7 @@ void SceneMainMenu::ButtonPlayMouseHover(sf::Vector2i mousePos)
     };
 }
 
-void SceneMainMenu::ButtonExitMouseHover(sf::Vector2i mousePos)
+void SceneMainMenu::buttonExitMouseHover(sf::Vector2i mousePos)
 {
     m_buttonExit.unhovered();
 

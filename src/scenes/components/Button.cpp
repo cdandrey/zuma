@@ -6,28 +6,44 @@
 ******************************************************************************/
 
 #include "Button.h"
-#include "../../configs/Config.h"
 
 namespace zuma
 {
 
-Button::Button(sf::Vector2f size,sf::Vector2f position,const std::string &text)
+void Button::setSize(sf::Vector2f size)
 {
     m_rect.setSize(size);
-    m_rect.setOrigin(config::origin(size));
-    m_rect.setPosition(position);
-    m_rect.setFillColor(config::button::cFillColor);
-    m_rect.setOutlineColor(config::button::cBorderColor);
-    m_rect.setOutlineThickness(config::button::cBorderThickness);
+    m_rect.setOrigin(size / 2.0f);   // center of rect
+}
 
-    m_font.loadFromFile(config::button::cFontPath);
-    m_text.setFont(m_font);
-    m_text.setString(text);
+void Button::setPosition(sf::Vector2f position)
+{
+    m_rect.setPosition(position);
     m_text.setPosition(position);
-    const auto textRect = m_text.getLocalBounds();
-    m_text.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
-    m_text.setFillColor(config::button::cTextColor);
-    m_text.setCharacterSize(config::button::cTextSize);
+}
+
+void Button::setText(const std::string &text)
+{
+    m_text.setString(text);
+    const auto rect = m_text.getLocalBounds();
+    m_text.setOrigin({rect.left + rect.width / 2.0f, rect.top + rect.height / 2.0f});
+}
+
+void Button::setStyle(const config::button::Style &style)
+{
+    m_style = style;
+
+    m_rect.setFillColor(style.cFillColor);
+    m_rect.setOutlineColor(style.cBorderColor);
+    m_rect.setOutlineThickness(style.cBorderThickness);
+
+    m_font.loadFromFile(style.cFontPath);
+    m_text.setFont(m_font);
+    m_text.setFillColor(style.cTextColor);
+    m_text.setCharacterSize(style.cTextSize);
+
+    // for update position origin
+    setText(m_text.getString().toAnsiString());
 }
 
 bool Button::isHover(sf::Vector2i mousePos) const
@@ -48,19 +64,19 @@ bool Button::isHover(sf::Vector2i mousePos) const
 
 void Button::unhovered()
 {
-    m_rect.setFillColor(config::button::cFillColor);
-    m_rect.setOutlineColor(config::button::cBorderColor);
-    m_text.setFillColor(config::button::cTextColor);
+    m_rect.setFillColor(m_style.cFillColor);
+    m_rect.setOutlineColor(m_style.cBorderColor);
+    m_text.setFillColor(m_style.cTextColor);
 }
 
 void Button::hovered()
 {
-    m_rect.setFillColor(config::button::cHoverFillColor);
-    m_rect.setOutlineColor(config::button::cHoverBorderColor);
-    m_text.setFillColor(config::button::cHoverTextColor);
+    m_rect.setFillColor(m_style.cHoverFillColor);
+    m_rect.setOutlineColor(m_style.cHoverBorderColor);
+    m_text.setFillColor(m_style.cHoverTextColor);
 }
 
-void Button::Draw(sf::RenderWindow *window) const
+void Button::draw(sf::RenderWindow *window) const
 {
     window->draw(m_rect);
     window->draw(m_text);

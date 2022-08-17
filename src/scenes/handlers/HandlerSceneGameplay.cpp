@@ -20,9 +20,9 @@ void HandlerSceneGameplay::input(GameWorld *scene)
 {
     sf::Event event;
     while (scene->getWindow()->pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
-            scene->getWindow()->close();
-        }
+
+        scene->input(event);
+
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
             scene->getGameState()->changed(GameState::State::Menu);
         }

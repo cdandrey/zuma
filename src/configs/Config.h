@@ -21,51 +21,61 @@ static const     sf::Vector2u cBaseWindowCenter = {cBaseWindowSize.x / 2, cBaseW
 static constexpr float cRadiansToDegreeCoef = 180.0f / 3.14f;
 
 static sf::Vector2f scaleFactor(sf::Vector2u windowSize)
-{
+{   
     return {static_cast<float>(windowSize.x) / static_cast<float>(cBaseWindowSize.x),
             static_cast<float>(windowSize.y) / static_cast<float>(cBaseWindowSize.y)};
 }
 
-static sf::Vector2f origin(sf::Vector2f size) 
+static sf::Vector2f scaled(sf::Vector2u windowSize,sf::Vector2f value) 
 {
-    return {size.x / 2.0f, size.y / 2.0f};
+    const auto scale = scaleFactor(windowSize);
+    return {scale.x * value.x, scale.y * value.y};
 }
+
 
 namespace button
 {
-    static const sf::Color   cFillColor        =  sf::Color::White;
-    static const sf::Color   cBorderColor      =  sf::Color::Black;
-    static const float       cBorderThickness  =  2.0f;
-    static const sf::Color   cHoverFillColor   =  sf::Color::Black;
-    static const sf::Color   cHoverBorderColor =  sf::Color::Black;
-    static const sf::Color   cTextColor        =  sf::Color::Black;
-    static const sf::Color   cHoverTextColor   =  sf::Color::White;
-    static const int         cTextSize         =  32;
-    static const std::string cFontPath         =  "resources/font/Comfortaa-Bold.ttf";
+    struct Style 
+    {
+        sf::Color   cFillColor       ;
+        sf::Color   cBorderColor     ;
+        float       cBorderThickness ;
+        sf::Color   cHoverFillColor  ;
+        sf::Color   cHoverBorderColor;
+        sf::Color   cTextColor       ;
+        sf::Color   cHoverTextColor  ;
+        int         cTextSize        ;
+        std::string cFontPath        ;
+    };
 
 }   // namespace button
 
 namespace menu
 {
-
     namespace button
     {
         static const sf::Vector2f cBaseSize     = {400.0f,100.0f};
         static const sf::Vector2f cBasePosition = {300.0f,cBaseWindowSize.y - 150.0f};
         static const float        cPadding      = 10.0f;
 
-        static sf::Vector2f size(sf::Vector2u windowSize) 
-        {
-            return {cBaseSize.x * scaleFactor(windowSize).x,
-                    cBaseSize.y * scaleFactor(windowSize).y};
-        }
-
         static sf::Vector2f position(int count,int idx,sf::Vector2u windowSize) 
         {
-            const auto scale = scaleFactor(windowSize);
-            return {scale.x * cBasePosition.x,
-                    scale.y * (cBasePosition.y - (count - idx - 1)*(cBaseSize.y + cPadding))};
+            return {cBasePosition.x,
+                    cBasePosition.y - (count - idx - 1)*(cBaseSize.y + cPadding)};
         }
+
+        static const config::button::Style cStyle = {
+            sf::Color::White                   , // cFillColor        
+            sf::Color::Black                   , // cBorderColor      
+            2.0f                               , // cBorderThickness  
+            sf::Color::Black                   , // cHoverFillColor   
+            sf::Color::Black                   , // cHoverBorderColor 
+            sf::Color::Black                   , // cTextColor        
+            sf::Color::White                   , // cHoverTextColor   
+            32                                 , // cTextSize         
+            "resources/font/Comfortaa-Bold.ttf"  // cFontPath         
+        };
+
     }   // namespace menu::button
 
 }   // namespace menu
@@ -74,18 +84,6 @@ namespace score
 {
     static const float cPadding = 10.0f;
     
-    static sf::Vector2f size(sf::Vector2u windowSize,sf::Vector2f baseSize) 
-    {
-        const auto scale = scaleFactor(windowSize);
-        return {scale.x * baseSize.x, scale.y * baseSize.y};
-    }
-
-    static sf::Vector2f position(sf::Vector2u windowSize,sf::Vector2f basePosition) 
-    {
-        const auto scale = scaleFactor(windowSize);
-        return {scale.x * basePosition.x, scale.y * basePosition.y};
-    }
-
     namespace box
     {
         static const sf::Vector2f cBaseSize        = {600.0f,400.0f};
@@ -144,14 +142,11 @@ namespace object_ball
 
     static const float cBaseRadius = 25.0f;
 
-    static  float radius(sf::Vector2u windowSize) 
+    static float radius(sf::Vector2u windowSize) 
     {
-        return cBaseRadius * scaleFactor(windowSize).y;
-    }
-
-    static sf::Vector2f origin(sf::Vector2u windowSize)
-    {
-        return {windowSize.x / 2.0f, windowSize.y / 2.0f};
+         const auto scale = static_cast<float>(windowSize.x * windowSize.x + windowSize.y * windowSize.y) /
+                            static_cast<float>(cBaseWindowSize.x*cBaseWindowSize.x + cBaseWindowSize.y * cBaseWindowSize.y);
+        return cBaseRadius * scale;
     }
 
     static sf::Vector2f startPosition(sf::Vector2u windowSize)

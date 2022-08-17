@@ -22,9 +22,9 @@ void HandlerSceneScore::input(GameWorld *scene)
 {
     sf::Event event;
     while (scene->getWindow()->pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
-            scene->getWindow()->close();
-        }
+
+        scene->input(event);
+
         if (event.type == sf::Event::MouseMoved) {
             const auto mousePos = sf::Mouse::getPosition(*scene->getWindow());
             scene->getSceneScore()->buttonOkMouseHover(mousePos);

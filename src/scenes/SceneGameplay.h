@@ -31,6 +31,7 @@ public:
     void gunShot(sf::Vector2f position);
     void update();
     void draw(sf::RenderWindow *window);
+    void resize(sf::Vector2u windowSize);
 
 private:
     

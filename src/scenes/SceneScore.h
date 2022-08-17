@@ -20,6 +20,7 @@ public:
     ~SceneScore() = default;
 
     void draw(sf::RenderWindow *window) const;
+    void resize(sf::Vector2u windowSize);
 
     bool buttonOkMouseClick(sf::Vector2i mousePos);
     void buttonOkMouseHover(sf::Vector2i mousePos);
@@ -27,6 +28,8 @@ public:
     void setScore(const config::gamestate::DataScore &data);
 
 private:
+    sf::Vector2u m_windowSize;
+
     Button m_buttonOk;
     sf::RectangleShape m_rectBox;
    

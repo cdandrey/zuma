@@ -7,15 +7,12 @@
 
 #pragma once
 
-#include <memory>
-
 #include "../scenes/SceneGameplay.h"
 #include "../scenes/SceneMainMenu.h"
 #include "../scenes/SceneScore.h"
 
-namespace sf {
-class RenderWindow;
-}
+#include <SFML/Graphics.hpp>
+#include <memory>
 
 namespace zuma 
 {
@@ -29,7 +26,7 @@ public:
     ~GameWorld();
 
     bool isOpen() const;
-    void input();
+    void input(const sf::Event &event);
     void update();
     void render();
 
@@ -48,6 +45,7 @@ private:
 
     void create();
     void destroy();
+    void resize(sf::Vector2u windowSize);
 };
 
 }

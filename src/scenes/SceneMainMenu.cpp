@@ -6,21 +6,38 @@
 ******************************************************************************/
 
 #include "SceneMainMenu.h"
-#include "../configs/Config.h"
 
 namespace zuma
 {
 
 SceneMainMenu::SceneMainMenu(sf::Vector2u windowSize)
-    : m_buttonPlay{config::menu::button::size(windowSize),config::menu::button::position(2,0,windowSize),"Play"}
-    , m_buttonExit{config::menu::button::size(windowSize),config::menu::button::position(2,1,windowSize),"Exit"}
 {
+    resize(windowSize);
+
+    m_buttonPlay.setText("Play");
+    m_buttonPlay.setStyle(config::menu::button::cStyle);
+
+    m_buttonExit.setText("Exit");
+    m_buttonExit.setStyle(config::menu::button::cStyle);
+}
+
+void SceneMainMenu::resize(sf::Vector2u windowSize)
+{
+    using namespace config::menu;
+
+    m_windowSize = windowSize;
+
+    m_buttonPlay.setSize(config::scaled(m_windowSize,button::cBaseSize));
+    m_buttonPlay.setPosition(config::scaled(m_windowSize,button::position(2,0,m_windowSize)));
+
+    m_buttonExit.setSize(config::scaled(m_windowSize,button::cBaseSize));
+    m_buttonExit.setPosition(config::scaled(m_windowSize,button::position(2,1,m_windowSize)));
 }
 
 void SceneMainMenu::draw(sf::RenderWindow *window) const
 {
-    m_buttonPlay.Draw(window);
-    m_buttonExit.Draw(window);
+    m_buttonPlay.draw(window);
+    m_buttonExit.draw(window);
 }
 
 bool SceneMainMenu::buttonPlayMouseClick(sf::Vector2i mousePos)
@@ -51,4 +68,4 @@ void SceneMainMenu::buttonExitMouseHover(sf::Vector2i mousePos)
     };
 }
 
-}
+}   // namespace zuma

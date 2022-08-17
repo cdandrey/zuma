@@ -78,6 +78,10 @@ void SceneGameplay::draw(sf::RenderWindow *window)
     calculatNextScene();
 }
 
+void SceneGameplay::resize(sf::Vector2u windowSize)
+{
+}
+
 bool SceneGameplay::gameOver() const
 {
     // taked next iteartor after begin, because first ball is fake

@@ -19,6 +19,7 @@ public:
     ~SceneMainMenu() = default;
 
     void draw(sf::RenderWindow *window) const;
+    void resize(sf::Vector2u windowSize);
 
     bool buttonPlayMouseClick(sf::Vector2i mousePos);
     bool buttonExitMouseClick(sf::Vector2i mousePos);
@@ -26,6 +27,7 @@ public:
     void buttonExitMouseHover(sf::Vector2i mousePos);
 
 private:
+    sf::Vector2u m_windowSize;
     Button m_buttonPlay;
     Button m_buttonExit;
 };

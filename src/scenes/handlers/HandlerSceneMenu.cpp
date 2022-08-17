@@ -23,14 +23,12 @@ void HandlerSceneMenu::input(GameWorld *scene)
     sf::Event event;
     while (scene->getWindow()->pollEvent(event)) {
         
+        scene->input(event);
+
         if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
             scene->getGameState()->changed(GameState::State::Play);
         }
         
-        if (event.type == sf::Event::Closed) {
-            scene->getWindow()->close();
-        }
-
         if (event.type == sf::Event::MouseMoved) {
             const auto mousePos = sf::Mouse::getPosition(*scene->getWindow());
             scene->getSceneMainMenu()->buttonPlayMouseHover(mousePos);
@@ -42,7 +40,6 @@ void HandlerSceneMenu::input(GameWorld *scene)
             if (scene->getSceneMainMenu()->buttonPlayMouseClick({event.mouseButton.x,event.mouseButton.y})) {
                 scene->getGameState()->changed(GameState::State::Play);
                 scene->getSceneGameplay()->gameStart();
-                scene->getGameState()->setScore(scene->getSceneGameplay()->getDataScore());
             }
 
             if (scene->getSceneMainMenu()->buttonExitMouseClick({event.mouseButton.x,event.mouseButton.y})) {

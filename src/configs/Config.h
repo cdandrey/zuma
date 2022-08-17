@@ -156,19 +156,6 @@ namespace object_ball
 
 }   // namespace object_ball
         
-namespace utils 
-{
-    static const std::vector<sf::Color> cColors = {
-            sf::Color::Yellow,
-            sf::Color::Cyan,
-            sf::Color::Magenta,
-            sf::Color::Red,
-            sf::Color::Green,
-            sf::Color::Blue,
-            sf::Color{230, 130, 0, 255} // orange
-        };
-}   // namespace utils
-
 namespace gameplay
 {
 

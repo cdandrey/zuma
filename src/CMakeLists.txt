@@ -30,10 +30,12 @@ set(handlers_sources
 
 set(components_headers
     scenes/components/Button.h
+    scenes/components/Table.h
 )
 
 set(components_sources
     scenes/components/Button.cpp
+    scenes/components/Table.cpp
 )
  
 set(scenes_headers

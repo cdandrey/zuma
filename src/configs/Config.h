@@ -8,7 +8,6 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include <cmath>
 
 namespace zuma
 {
@@ -16,9 +15,8 @@ namespace zuma
 namespace config
 {
 
-static const     sf::Vector2u cBaseWindowSize = {1920,1080};
-static const     sf::Vector2u cBaseWindowCenter = {cBaseWindowSize.x / 2, cBaseWindowSize.y / 2};
-static constexpr float cRadiansToDegreeCoef = 180.0f / 3.14f;
+static const     sf::Vector2u cBaseWindowSize      = {1920,1080};
+static constexpr float        cRadiansToDegreeCoef = 180.0f / 3.14f;
 
 static sf::Vector2f scaleFactor(sf::Vector2u windowSize)
 {   
@@ -48,7 +46,20 @@ namespace button
         std::string cFontPath        ;
     };
 
-}   // namespace button
+}   // namespace config::button
+
+namespace table
+{
+    struct Style
+    {
+        sf::Color   cFillColor      ;
+        sf::Color   cBorderColor    ;
+        float       cBorderThickness;
+        sf::Color   cTextColor      ;
+        int         cTextSize       ;
+        std::string cFontPath       ;
+    };
+}   // namespace config::table
 
 namespace menu
 {
@@ -82,44 +93,28 @@ namespace menu
 
 namespace score
 {
-    static const float cPadding = 10.0f;
+    static const sf::Vector2f cBaseSize        = {600.0f,400.0f};
+    static const sf::Vector2f cBasePosition    = {cBaseWindowSize.x / 2.0f, cBaseWindowSize.y / 2.0f};
     
-    namespace box
-    {
-        static const sf::Vector2f cBaseSize        = {600.0f,400.0f};
-        static const sf::Vector2f cBasePosition    = {static_cast<float>(cBaseWindowCenter.x),
-                                                      static_cast<float>(cBaseWindowCenter.y)};
-        static const sf::Color    cFillColor       = sf::Color::White;
-        static const sf::Color    cBorderColor     = sf::Color::Black;
-        static const float        cBorderThickness = 2.0f;
-
-    }   // namespace score::box
+    static const config::table::Style cStyle = {
+        sf::Color::White                    , //   cFillColor      
+        sf::Color::Black                    , //   cBorderColor    
+        2.0f                                , //   cBorderThickness
+        sf::Color::Black                    , //   cTextColor      
+        32                                  , //   cTextSize       
+        "resources/font/Comfortaa-Bold.ttf"   //   cFontPath       
+    };
 
     namespace button
     {
-        static const sf::Vector2f cBaseSize = {box::cBaseSize.x, 40.0f};
-        static const sf::Vector2f cBasePosition = {box::cBasePosition.x,
-                                                   box::cBasePosition.y + box::cBaseSize.y / 2.0f + cBaseSize.y / 2.0f + cPadding};
+        static const sf::Vector2f cBaseSize = {config::score::cBaseSize.x, 40.0f};
+        static const sf::Vector2f cBasePosition = {config::score::cBasePosition.x,
+                                                   config::score::cBasePosition.y + 
+                                                   config::score::cBaseSize.y / 2.0f + 
+                                                   cBaseSize.y / 2.0f + 
+                                                   cBaseSize.y / 4.0f /*padding*/};
     
     }   // namespace score::button
-
-    namespace text
-    {
-        static const sf::Vector2f cBaseSize = {box::cBaseSize.x / 2.0f, 50.0f};
-        static const sf::Vector2f cBasePosition = {box::cBasePosition.x - box::cBaseSize.x / 2.0f + 2.0f * cPadding,
-                                                   box::cBasePosition.y - box::cBaseSize.y / 2.0f + cBaseSize.y / 2.0f + cPadding};
-
-        static const sf::Vector2f shiftLeft (sf::Vector2u windowSize, sf::Vector2f position) 
-        {
-            return {position.x + scaleFactor(windowSize).x * (box::cBaseSize.x / 2.0f), position.y};
-        }
-
-        static const sf::Vector2f shiftDown (sf::Vector2u windowSize, sf::Vector2f position) 
-        {
-            return {position.x, position.y + scaleFactor(windowSize).y * (cBaseSize.y + cPadding)};
-        }
-
-    }   // namespace score::text
 
 }   // namespace score
 

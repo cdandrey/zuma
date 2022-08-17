@@ -8,7 +8,7 @@
 #pragma once
 
 #include "components/Button.h"
-#include "../configs/Config.h"
+#include "components/Table.h"
 
 namespace zuma
 {
@@ -31,21 +31,7 @@ private:
     sf::Vector2u m_windowSize;
 
     Button m_buttonOk;
-    sf::RectangleShape m_rectBox;
-   
-    // TO DO: components score
-    sf::Text m_shotsTitle;
-    sf::Text m_shotsValue;
-
-    sf::Text m_destroedTitle;
-    sf::Text m_destroedValue;
-
-    sf::Text m_efficiencyTitle;
-    sf::Text m_efficiencyValue;
-
-    sf::Font m_font;
-
-    void configText(sf::Text *text);
+    Table m_table;
 };
 
 } // namespace zuma
